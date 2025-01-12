@@ -1,327 +1,871 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Trade Data Generator</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
-    />
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body class="bg-gray-900 text-white">
-    <!-- Navbar -->
-    <header
-      class="sticky top-0 z-50 bg-gradient-to-r from-gray-800 via-gray-900 to-black shadow-md"
-    >
-      <nav
-        class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center"
-      >
-        <a
-          href="#"
-          class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"
-        >
-          Trade Data Generator
-        </a>
-        <ul class="flex space-x-8 text-lg">
-          <li>
-            <a href="#features" class="hover:text-blue-400 transition"
-              >Features</a
-            >
-          </li>
-          <li>
-            <a href="#usage" class="hover:text-blue-400 transition">Usage</a>
-          </li>
-          <li>
-            <a href="#footer" class="hover:text-blue-400 transition">Contact</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Market Depth Generator Landing Page" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Market Depth Generator - Landing Page</title>
 
-    <section
-      class="hero bg-gradient-to-r from-blue-500 to-purple-500 text-center py-32 relative overflow-hidden"
-    >
-      <h1
-        class="text-6xl font-extrabold animate__animated animate__fadeInDown text-white"
-      >
-        Trade Data Generator
-      </h1>
-      <p class="mt-4 text-2xl text-gray-200 max-w-3xl mx-auto">
-        A powerful, lightweight library for simulating market depth, trades, and
-        candlesticks tailored for trading platforms and developers.
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /*
+      Minimal / Premium Dark Aesthetic with shadcn-like influences
+    */
+
+    /* RESET & GLOBALS */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background-color: #000; /* Make the entire site black for an ultra-dark look */
+      color: #e2e2e2;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    ul {
+      list-style: none;
+    }
+    img {
+      max-width: 100%;
+      display: block;
+    }
+    code {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 0.25rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+
+    /* Utility: Container */
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    /* Extra utility for subtle shadow */
+    .shadow {
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    /* TYPOGRAPHY */
+    h1, h2, h3, h4, h5 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+    }
+
+    /* --------------------------------
+       NAVBAR
+    -------------------------------- */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background-color: #000; /* Matches the hero for a seamless look */
+      padding: 0.75rem 0;
+      transition: background-color 0.3s ease;
+      /* Optional: You could do a transparent to black transition on scroll if desired */
+    }
+    .nav-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 60px;
+    }
+    .nav-logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #f2f2f2;
+    }
+    .nav-logo span {
+      color: #6366f1; /* Accent color */
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links li a {
+      display: inline-block;
+      padding: 0.5rem;
+      transition: color 0.3s ease, transform 0.3s ease;
+      font-weight: 500;
+    }
+    .nav-links li a:hover {
+      color: #6366f1;
+      transform: translateY(-2px);
+    }
+
+    /* --------------------------------
+       HERO SECTION
+    -------------------------------- */
+    .hero {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: #000; /* Keep hero fully black for a premium look */
+      padding: 5rem 1rem;
+      overflow: hidden;
+    }
+    .hero::before {
+      /* Subtle radial overlay for visual depth */
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.02), transparent 70%);
+      z-index: 0;
+    }
+    .hero-content {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+      z-index: 1;
+      color: #f2f2f2;
+    }
+    .hero-title {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: #cfcfcf;
+      margin-bottom: 2rem;
+    }
+    .hero-btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: #6366f1;
+      color: #fff;
+      border-radius: 4px;
+      font-weight: 600;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .hero-btn:hover {
+      background-color: #5053c8;
+      transform: translateY(-2px);
+    }
+
+    /* --------------------------------
+       TRUSTED / PREMIUM SECTION
+    -------------------------------- */
+    .trusted-by {
+      background-color: #0a0a0a;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    .trusted-by h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    .trusted-logos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    .trusted-logo {
+      width: 120px;
+      height: 60px;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease;
+    }
+    .trusted-logo:hover {
+      transform: translateY(-3px);
+    }
+    /* Replace .trusted-logo with actual brand images or placeholders */
+
+    /* --------------------------------
+       WHY CHOOSE US SECTION
+    -------------------------------- */
+    .why-choose {
+      padding: 4rem 0;
+      background-color: #0a0a0a;
+    }
+    .why-choose-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .why-choose-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .why-choose-item {
+      background-color: #111;
+      border: 1px solid #2c2c2c;
+      border-radius: 6px;
+      padding: 2rem;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .why-choose-item:hover {
+      background-color: #151515;
+      transform: translateY(-3px);
+    }
+    .why-choose-item h3 {
+      font-size: 1.3rem;
+      color: #6366f1;
+      margin-bottom: 1rem;
+    }
+    .why-choose-item p {
+      color: #ccc;
+      margin-bottom: 1rem;
+    }
+
+    /* --------------------------------
+       FEATURES SECTION
+    -------------------------------- */
+    #features {
+      padding: 4rem 0;
+      background-color: #000;
+    }
+    .features-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .feature-item {
+      background-color: #111;
+      border: 1px solid #2c2c2c;
+      border-radius: 8px;
+      padding: 2rem;
+      transition: transform 0.3s ease;
+    }
+    .feature-item:hover {
+      transform: translateY(-5px);
+    }
+    .feature-title {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #6366f1;
+    }
+
+    /* --------------------------------
+       CTA SECTION: "Visit NPM"
+    -------------------------------- */
+    .cta-npm {
+      background: #111;
+      padding: 4rem 1rem;
+      text-align: center;
+    }
+    .cta-npm h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .cta-npm p {
+      color: #ccc;
+      max-width: 600px;
+      margin: 0.5rem auto 2rem auto;
+    }
+    .cta-npm .cta-btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: #6366f1;
+      color: #fff;
+      border-radius: 4px;
+      font-weight: 600;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .cta-npm .cta-btn:hover {
+      background-color: #5053c8;
+      transform: translateY(-2px);
+    }
+
+    /* --------------------------------
+       PRICING SECTION
+    -------------------------------- */
+    #pricing {
+      padding: 4rem 0;
+      background: #0a0a0a;
+    }
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .pricing-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+    }
+    .card {
+      background-color: #111;
+      border: 1px solid #2c2c2c;
+      width: 280px;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card h3 {
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      color: #6366f1;
+    }
+    .card p {
+      margin-bottom: 1rem;
+      color: #ccc;
+    }
+    .price {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 1rem 0;
+      color: #f2f2f2;
+    }
+    .btn-primary {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: #6366f1;
+      color: #fff;
+      border-radius: 4px;
+      font-weight: 600;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      margin-top: 1rem;
+    }
+    .btn-primary:hover {
+      background-color: #5053c8;
+      transform: translateY(-2px);
+    }
+
+    /* --------------------------------
+       HOW TO USE SECTION
+    -------------------------------- */
+    #how-to-use {
+      padding: 4rem 0;
+      background-color: #000;
+    }
+    .how-to-use-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .steps-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      row-gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .step {
+      background-color: #111;
+      border: 1px solid #2c2c2c;
+      border-radius: 8px;
+      padding: 2rem;
+      transition: transform 0.3s ease;
+    }
+    .step:hover {
+      transform: translateY(-3px);
+    }
+    .step h4 {
+      color: #6366f1;
+      margin-bottom: 1rem;
+    }
+
+    /* --------------------------------
+       CONTACT SECTION
+    -------------------------------- */
+    #contact {
+      padding: 4rem 0;
+      background: #0a0a0a;
+    }
+    .contact-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .contact-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .contact-form,
+    .contact-info {
+      flex: 1 1 300px;
+      background-color: #111;
+      border: 1px solid #2c2c2c;
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    .contact-form h4,
+    .contact-info h4 {
+      margin-bottom: 1rem;
+      color: #6366f1;
+    }
+    .contact-form form {
+      display: grid;
+      grid-gap: 1rem;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #2c2c2c;
+      border-radius: 4px;
+      font-size: 1rem;
+      background-color: #1a1a1a;
+      color: #f2f2f2;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: #6366f1;
+    }
+    .contact-form button {
+      background-color: #6366f1;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .contact-form button:hover {
+      background-color: #5053c8;
+      transform: translateY(-2px);
+    }
+    .contact-info p {
+      margin-bottom: 0.5rem;
+      color: #ccc;
+    }
+
+    /* --------------------------------
+       MODERN FOOTER
+    -------------------------------- */
+    footer {
+      background-color: #000;
+      border-top: 1px solid #2c2c2c;
+      padding: 2rem 0;
+      color: #777;
+    }
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .footer-col {
+      flex: 1 1 200px;
+      margin: 1rem 0;
+    }
+    .footer-col h4 {
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+    .footer-col ul li {
+      margin-bottom: 0.5rem;
+    }
+    .footer-col ul li a {
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .footer-col ul li a:hover {
+      color: #6366f1;
+    }
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+    footer a {
+      color: #6366f1;
+      font-weight: 500;
+    }
+
+    /* --------------------------------
+       RESPONSIVE
+    -------------------------------- */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none; /* Minimal approach; you might add a burger menu for real usage. */
+      }
+
+      .hero-title {
+        font-size: 2.2rem;
+      }
+
+      .features-grid,
+      .why-choose-grid,
+      .pricing-cards,
+      .trusted-logos,
+      .contact-content,
+      .footer-content {
+        flex-direction: column;
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="container nav-wrapper">
+      <div class="nav-logo">
+        <a href="#">MarketDepth<span>Gen</span></a>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#why-choose">Why Choose</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#how-to-use">How to Use</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Market Depth Generator</h1>
+      <p class="hero-subtitle">
+        A robust simulation engine for market depth, trades, and candlesticks—
+        trusted by developers and analysts to power next-gen trading experiences.
       </p>
-      <div class="mt-8 flex justify-center gap-4">
-        <button
-          class="px-8 py-3 bg-white text-blue-500 font-bold rounded-lg shadow-lg hover:bg-blue-100 hover:scale-105 transition-transform"
-        >
-          npm install trade-data-generator
-        </button>
-        <button
-          onclick="window.open('https://www.npmjs.com/package/trade-data-generator', '_blank')"
-          class="px-8 py-3 bg-transparent border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-blue-500 transition cursor-pointer"
-        >
-          View Documentation
-        </button>
+      <a href="#features" class="hero-btn">Explore Features</a>
+    </div>
+  </section>
+
+  <!-- TRUSTED BY SECTION -->
+  <section class="trusted-by">
+    <div class="container">
+      <h2>Trusted by Leading Platforms</h2>
+      <p>From crypto exchanges to quant funds, our library is a favorite among industry leaders.</p>
+      <div class="trusted-logos">
+        <div class="trusted-logo">Logo A</div>
+        <div class="trusted-logo">Logo B</div>
+        <div class="trusted-logo">Logo C</div>
+        <div class="trusted-logo">Logo D</div>
       </div>
+    </div>
+  </section>
 
-      <!-- Decorative Elements -->
-      <div
-        class="absolute bottom-0 left-0 w-48 h-48 bg-purple-400 opacity-30 rounded-full blur-3xl"
-      ></div>
-      <div
-        class="absolute top-0 right-0 w-64 h-64 bg-blue-400 opacity-30 rounded-full blur-3xl"
-      ></div>
-    </section>
-
-    <!-- Features Section -->
-    <section
-      id="features"
-      class="features py-20 px-10 bg-gradient-to-r from-gray-800 via-gray-900 to-black relative"
-    >
-      <!-- Decorative Background -->
-      <div
-        class="absolute top-10 left-0 w-72 h-72 bg-purple-400 opacity-20 rounded-full blur-3xl"
-      ></div>
-      <div
-        class="absolute bottom-10 right-0 w-96 h-96 bg-blue-400 opacity-20 rounded-full blur-3xl"
-      ></div>
-
-      <h2
-        class="text-5xl font-extrabold text-center mb-14 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"
-      >
-        🌟 Features
-      </h2>
-      <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 relative z-10"
-      >
-        <!-- Feature Card 1 -->
-        <div
-          class="p-8 bg-gray-800 rounded-lg shadow-2xl hover:scale-105 transition-transform text-center"
-        >
-          <div
-            class="w-16 h-16 mx-auto flex items-center justify-center text-3xl text-blue-400 mb-6"
-          >
-            <i class="fas fa-chart-line"></i>
-          </div>
-          <h3 class="text-2xl font-bold text-blue-400">Dynamic Market Depth</h3>
-          <p class="mt-4 text-gray-400">
-            Simulate realistic buy and sell orders for trading platforms.
+  <!-- WHY CHOOSE US -->
+  <section id="why-choose" class="why-choose">
+    <div class="container">
+      <div class="why-choose-header">
+        <h2>Why Choose Market Depth Generator?</h2>
+        <p style="color: #ccc; max-width: 700px; margin: 0 auto;">
+          Empower your trading platform with lightning-fast, realistic simulations. From 
+          rapid prototyping to production-ready apps, our library is carefully engineered 
+          to give you complete control over market scenarios.
+        </p>
+      </div>
+      <div class="why-choose-grid">
+        <div class="why-choose-item">
+          <h3>Enterprise-Grade Reliability</h3>
+          <p>
+            Built with Redis caching and robust data structures, ensuring 
+            minimal downtime and high availability—no matter how big your user base gets.
           </p>
         </div>
-        <!-- Feature Card 2 -->
-        <div
-          class="p-8 bg-gray-800 rounded-lg shadow-2xl hover:scale-105 transition-transform text-center"
-        >
-          <div
-            class="w-16 h-16 mx-auto flex items-center justify-center text-3xl text-blue-400 mb-6"
-          >
-            <i class="fas fa-sync-alt"></i>
-          </div>
-          <h3 class="text-2xl font-bold text-blue-400">Real-Time Trades</h3>
-          <p class="mt-4 text-gray-400">
-            Generate and track executed trades seamlessly.
+        <div class="why-choose-item">
+          <h3>Highly Customizable</h3>
+          <p>
+            Tweak middle prices, intervals, volumes, and more. Perfect for 
+            simulating everything from crypto assets to traditional equities.
           </p>
         </div>
-        <!-- Feature Card 3 -->
-        <div
-          class="p-8 bg-gray-800 rounded-lg shadow-2xl hover:scale-105 transition-transform text-center"
-        >
-          <div
-            class="w-16 h-16 mx-auto flex items-center justify-center text-3xl text-blue-400 mb-6"
-          >
-            <i class="fas fa-database"></i>
-          </div>
-          <h3 class="text-2xl font-bold text-blue-400">Redis Caching</h3>
-          <p class="mt-4 text-gray-400">
-            Efficiently store candlestick data using Redis.
+        <div class="why-choose-item">
+          <h3>Built for Performance</h3>
+          <p>
+            Scalable architecture easily handles multiple symbols with real-time 
+            trade data and candlestick updates over WebSockets.
+          </p>
+        </div>
+        <div class="why-choose-item">
+          <h3>Developer Friendly</h3>
+          <p>
+            Simple APIs, active community support, and comprehensive 
+            documentation to get you started in minutes.
           </p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Usage Section -->
-    <section
-      id="usage"
-      class="usage py-20 px-10 bg-gradient-to-r from-gray-900 to-black relative"
-    >
-      <!-- Decorative Background -->
-      <div
-        class="absolute top-0 left-0 w-96 h-96 bg-blue-400 opacity-20 rounded-full blur-3xl"
-      ></div>
-      <div
-        class="absolute bottom-0 right-0 w-72 h-72 bg-purple-400 opacity-20 rounded-full blur-3xl"
-      ></div>
-
-      <!-- Section Heading -->
-      <h2
-        class="text-5xl font-extrabold text-center mb-14 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"
-      >
-        🛠️ Usage
-      </h2>
-
-      <!-- Code Block Container -->
-      <div class="relative bg-gray-800 rounded-lg p-6 shadow-2xl">
-        <!-- Code Block -->
-        <pre
-          class="language-javascript rounded-lg p-6 bg-gray-900 overflow-x-auto"
-        >
-  <code class="language-javascript">
-  const MarketDepthGenerator = require("trade-data-generator");
-  
-  const generator = new MarketDepthGenerator({
-    redisHost: "127.0.0.1",
-    redisPort: 6379,
-    middlePrice: 305.12,
-  });
-  
-  (async () => {
-    await generator.init();
-    generator.simulateTrade();
-  })();
-  </code>
-      </pre>
-      </div>
-    </section>
-
-<!-- Contact Section -->
-<footer
-  id="footer"
-  class="relative py-20 bg-gradient-to-br from-gray-800 via-gray-900 to-black text-white"
->
-  <!-- Decorative Background -->
-  <div class="absolute top-0 left-0 w-96 h-96 bg-blue-400 opacity-20 rounded-full blur-3xl"></div>
-  <div class="absolute bottom-0 right-0 w-72 h-72 bg-purple-400 opacity-20 rounded-full blur-3xl"></div>
-
-  <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-    <div class="text-center mb-12">
-      <h2
-        class="text-5xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"
-      >
-        Get in Touch
-      </h2>
-      <p class="text-gray-300 text-lg">
-        Have questions, feedback, or need help? Feel free to contact us through
-        the form below or reach out via social media.
+  <!-- FEATURES SECTION -->
+  <section id="features" class="container">
+    <div class="features-header">
+      <h2>Key Features</h2>
+      <p style="color: #ccc;">
+        Customize your simulations, seamlessly integrate with Redis, and broadcast real-time data 
+        for an unmatched trading experience.
       </p>
     </div>
+    <div class="features-grid">
+      <div class="feature-item">
+        <h3 class="feature-title">Simulate Market Depth</h3>
+        <p>
+          Generate dynamic buy/sell orders for crypto or any financial markets. 
+          Perfect for stress-testing new features and analyzing liquidity.
+        </p>
+      </div>
+      <div class="feature-item">
+        <h3 class="feature-title">Generate OHLC Candlesticks</h3>
+        <p>
+          Configure intervals and track open, high, low, close values in real-time. 
+          Ideal for charting and analytical dashboards.
+        </p>
+      </div>
+      <div class="feature-item">
+        <h3 class="feature-title">WebSocket Integration</h3>
+        <p>
+          Broadcast market depth and trade stats to multiple clients concurrently 
+          for true real-time experiences.
+        </p>
+      </div>
+      <div class="feature-item">
+        <h3 class="feature-title">Redis Support</h3>
+        <p>
+          Cache candlestick data and stats for efficient real-time performance, 
+          even at scale.
+        </p>
+      </div>
+      <div class="feature-item">
+        <h3 class="feature-title">Multi-Symbol Support</h3>
+        <p>
+          Simulate trading pairs like BTCUSD, ETHUSD, and beyond—adaptable 
+          to any market scenario.
+        </p>
+      </div>
+      <div class="feature-item">
+        <h3 class="feature-title">Fully Customizable</h3>
+        <p>
+          Developer-friendly configuration for adjusting pricing models, intervals, 
+          volumes, and more.
+        </p>
+      </div>
+    </div>
+  </section>
 
-    <div
-      class="flex flex-col md:flex-row md:justify-center md:space-x-16 items-center"
-    >
+  <!-- CTA: Visit NPM Package -->
+  <section class="cta-npm">
+    <div class="container">
+      <h2>Ready to Elevate Your Trading Simulations?</h2>
+      <p>
+        Visit our npm package page to download, explore documentation, 
+        and get started in just a few clicks.
+      </p>
+      <a 
+        href="https://www.npmjs.com/package/market-depth-generator" 
+        target="_blank" 
+        class="cta-btn"
+      >
+        Go to npm Package
+      </a>
+    </div>
+  </section>
+
+  <!-- PRICING SECTION -->
+  <section id="pricing">
+    <div class="container pricing-header">
+      <h2>Pricing</h2>
+      <p style="color: #ccc;">
+        Choose from flexible plans tailored to your project size and complexity.
+      </p>
+    </div>
+    <div class="container pricing-cards">
+      <div class="card">
+        <h3>Free</h3>
+        <p>
+          Ideal for personal projects and small-scale testing.
+        </p>
+        <p class="price">$0</p>
+        <p>• Single-symbol simulation<br>• Community support</p>
+        <a href="#" class="btn-primary">Get Started</a>
+      </div>
+      <div class="card">
+        <h3>Pro</h3>
+        <p>
+          Advanced simulation for multiple symbols with Redis integration 
+          and priority support.
+        </p>
+        <p class="price">$19/mo</p>
+        <p>• Up to 10 symbols<br>• Priority email support</p>
+        <a href="#" class="btn-primary">Start Pro</a>
+      </div>
+      <div class="card">
+        <h3>Enterprise</h3>
+        <p>
+          Best for mission-critical applications needing unlimited symbols, 
+          dedicated support, and custom SLAs.
+        </p>
+        <p class="price">Custom</p>
+        <p>• Unlimited symbols<br>• Phone & Slack support</p>
+        <a href="#" class="btn-primary">Contact Us</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW TO USE SECTION -->
+  <section id="how-to-use">
+    <div class="container how-to-use-header">
+      <h2>How to Use</h2>
+      <p style="color: #ccc;">
+        Quickly integrate into any Node.js project. Scale on-demand, and build advanced 
+        trading simulations in minutes.
+      </p>
+    </div>
+    <div class="container steps-container">
+      <!-- Step 1 -->
+      <div class="step">
+        <h4>1. Installation</h4>
+        <p>
+          Install via npm: <code>npm install market-depth-generator</code>
+        </p>
+      </div>
+      <!-- Step 2 -->
+      <div class="step">
+        <h4>2. Basic Setup</h4>
+<pre style="background: rgba(255,255,255,0.03); padding: 1rem; overflow-x:auto;">
+const MarketDepthGenerator = require("market-depth-generator");
+const generator = new MarketDepthGenerator({
+  redisHost: "127.0.0.1",
+  redisPort: 6379,
+  symbols: ["BTCUSD", "ETHUSD"],
+  middlePrice: 305.12,
+});
+
+(async () => {
+  await generator.init();
+  // Start your simulation
+  setInterval(() => {
+    generator.simulateTrade("BTCUSDT");
+  }, 1000);
+})();
+</pre>
+      </div>
+      <!-- Step 3 -->
+      <div class="step">
+        <h4>3. Connect WebSocket</h4>
+        <p>
+          Create a WebSocket server to broadcast real-time depth, stats, and candlestick data. 
+          Serve multiple clients seamlessly.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact">
+    <div class="container contact-header">
+      <h2>Contact Us</h2>
+      <p style="color: #ccc;">Have questions? We’re here to help you succeed.</p>
+    </div>
+    <div class="container contact-content">
       <!-- Contact Form -->
-      <div class="w-full md:w-1/2 lg:w-1/3">
-        <form
-          action="https://formspree.io/f/YOUR_FORM_ID"
-          method="POST"
-          class="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 p-8 rounded-xl shadow-2xl"
-        >
-          <div class="mb-6">
-            <label
-              for="name"
-              class="block text-sm font-medium text-gray-200"
-              >Name</label
-            >
-            <input
-              type="text"
-              name="name"
-              id="name"
-              required
-              class="mt-2 block w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-md"
-            />
-          </div>
-          <div class="mb-6">
-            <label
-              for="email"
-              class="block text-sm font-medium text-gray-200"
-              >Email</label
-            >
-            <input
-              type="email"
-              name="email"
-              id="email"
-              required
-              class="mt-2 block w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-md"
-            />
-          </div>
-          <div class="mb-6">
-            <label
-              for="message"
-              class="block text-sm font-medium text-gray-200"
-              >Message</label
-            >
-            <textarea
-              name="message"
-              id="message"
-              rows="4"
-              required
-              class="mt-2 block w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-md"
-            ></textarea>
-          </div>
-          <button
-            type="submit"
-            class="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-transform"
-          >
-            Send Message
-          </button>
+      <div class="contact-form">
+        <h4>Send us a Message</h4>
+        <form action="#" method="POST">
+          <input type="text" name="name" placeholder="Your Name" required />
+          <input type="email" name="email" placeholder="Your Email" required />
+          <textarea
+            name="message"
+            rows="5"
+            placeholder="Your Message"
+            required
+          ></textarea>
+          <button type="submit">Submit</button>
         </form>
       </div>
-
-      <!-- Social Media Links -->
-      <div class="w-full md:w-1/3 lg:w-1/4 mt-10 md:mt-0 text-center">
-        <h3
-          class="text-3xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"
-        >
-          Follow Us
-        </h3>
-        <div class="flex justify-center space-x-8 text-3xl">
-          <a
-            href="https://github.com/monupareeklg"
-            target="_blank"
-            class="text-blue-400 hover:text-blue-500 transition hover:scale-110"
-          >
-            <i class="fab fa-github"></i>
-          </a>
-          <a
-            href="https://www.npmjs.com/package/trade-data-generator"
-            target="_blank"
-            class="text-blue-400 hover:text-blue-500 transition hover:scale-110"
-          >
-            <i class="fab fa-npm"></i>
-          </a>
-          <a
-            href="mailto:monupareeklg@gmail.com"
-            class="text-blue-400 hover:text-blue-500 transition hover:scale-110"
-          >
-            <i class="fas fa-envelope"></i>
-          </a>
-        </div>
+      <!-- Contact Info -->
+      <div class="contact-info">
+        <h4>Reach Out Directly</h4>
+        <p><strong>Email:</strong> monupareeklg@gmail.com</p>
+        <p><strong>GitHub:</strong> 
+          <a href="https://github.com/monupareeklg" target="_blank">monupareeklg</a>
+        </p>
+        <p><strong>License:</strong> MIT</p>
+        <p>
+          <strong>Downloads:</strong>
+          <em>See <a href="https://www.npmjs.com/package/market-depth-generator" target="_blank">npm statistics</a> for more info</em>
+        </p>
+        <p style="margin-top: 1rem;">
+          We appreciate contributions! Fork our repo and submit a pull request.
+        </p>
       </div>
     </div>
-  </div>
-</footer>
+  </section>
 
+  <!-- MODERN FOOTER -->
+  <footer>
+    <div class="container footer-content">
+      <div class="footer-col">
+        <h4>MarketDepthGen</h4>
+        <ul>
+          <li><a href="#why-choose">Why Choose</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#how-to-use">How to Use</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="https://www.npmjs.com/package/market-depth-generator" target="_blank">npm</a></li>
+          <li><a href="https://github.com/monupareeklg" target="_blank">GitHub</a></li>
+          <li><a href="#">Documentation</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Community Forum</a></li>
+          <li><a href="#">Report an Issue</a></li>
+          <li><a href="mailto:monupareeklg@gmail.com">Email Support</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>
+        &copy; <span id="year"></span> Market Depth Generator by
+        <a href="https://github.com/monupareeklg" target="_blank">Love Pareek</a>. 
+        All rights reserved.
+      </p>
+    </div>
+  </footer>
 
-    <!-- Add Font Awesome -->
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"
-      crossorigin="anonymous"
-    ></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="script.js"></script>
-  </body>
+  <!-- Script to auto-update the year in footer -->
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
 </html>
