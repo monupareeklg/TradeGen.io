@@ -10,6 +10,7 @@
       name="keywords"
       content="trading simulator, market depth generator, financial tools, trading platform, TradeSim"
     />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <meta name="author" content="TradeSim" />
     <meta name="robots" content="index, follow" />
     <meta name="language" content="en" />
@@ -55,554 +56,733 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-
-    <style>
-      /*
-      Minimal / Premium Dark Aesthetic with shadcn-like influences
+<style>
+    /*
+    Minimal / Premium Dark Aesthetic with shadcn-like influences
     */
+    
+    /* RESET & GLOBALS */
+    *, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-      /* RESET & GLOBALS */
-      *,
-      *::before,
-      *::after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      html,
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: #000; /* Make the entire site black for an ultra-dark look */
-        color: #e2e2e2;
-        line-height: 1.6;
-        scroll-behavior: smooth;
-      }
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-      ul {
-        list-style: none;
-      }
-      img {
-        max-width: 100%;
-        display: block;
-      }
-      code {
-        background-color: rgba(255, 255, 255, 0.05);
-        padding: 0.25rem 0.4rem;
-        border-radius: 4px;
-        font-size: 0.95rem;
-      }
-
-      /* Utility: Container */
-      .container {
-        width: 90%;
-        max-width: 1200px;
-        margin: 0 auto;
-      }
-      /* Extra utility for subtle shadow */
-      .shadow {
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      }
-
-      /* TYPOGRAPHY */
-      h1,
-      h2,
-      h3,
-      h4,
-      h5 {
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-      }
-      p {
-        margin-bottom: 1rem;
-      }
-
-      /* --------------------------------
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+    html,
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: #000; /* Make the entire site black for an ultra-dark look */
+      color: #e2e2e2;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    ul {
+      list-style: none;
+    }
+    img {
+      max-width: 100%;
+      display: block;
+    }
+    code {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 0.25rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+    
+    /* Utility: Container */
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    /* Extra utility for subtle shadow */
+    .shadow {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* TYPOGRAPHY */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 1rem;
+    }
+    
+    /* --------------------------------
        NAVBAR
     -------------------------------- */
-      nav {
-        position: sticky;
-        top: 0;
-        z-index: 999;
-        background-color: #000; /* Matches the hero for a seamless look */
-        padding: 0.75rem 0;
-        transition: background-color 0.3s ease;
-        /* Optional: You could do a transparent to black transition on scroll if desired */
-      }
-      .nav-wrapper {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        height: 60px;
-      }
-      .nav-logo {
-        font-size: 1.4rem;
-        font-weight: 800;
-        letter-spacing: 1px;
-        color: #f2f2f2;
-      }
-      .nav-logo span {
-        color: #6366f1; /* Accent color */
-      }
-      .nav-links {
-        display: flex;
-        gap: 2rem;
-      }
-      .nav-links li a {
-        display: inline-block;
-        padding: 0.5rem;
-        transition: color 0.3s ease, transform 0.3s ease;
-        font-weight: 500;
-      }
-      .nav-links li a:hover {
-        color: #6366f1;
-        transform: translateY(-2px);
-      }
+   /* Basic Resets & Container (Adjust as needed) */
 
-      /* --------------------------------
+
+/* NAVBAR STYLES */
+nav {
+  background-color: #000; /* or any color you prefer */
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  padding: 0.75rem 0;
+}
+
+.nav-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+}
+
+/* LOGO */
+.nav-logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #f2f2f2; 
+}
+
+.nav-logo span {
+  color: #6366f1; /* Accent color */
+}
+
+/* NAV LINKS (Desktop) */
+.nav-links {
+  display: flex; /* Shown by default on desktops */
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links li a {
+  display: inline-block;
+  color: #e2e2e2;
+  font-weight: 500;
+  transition: color 0.3s ease, transform 0.3s ease;
+  padding: 0.5rem;
+}
+
+.nav-links li a:hover {
+  color: #6366f1; /* Hover accent color */
+  transform: translateY(-2px);
+}
+
+/* HAMBURGER ICON (Hidden on desktop by default) */
+.hamburger {
+  display: none; /* We show it in mobile media query */
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 5px;
+  width: 25px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #ffffff;
+  border-radius: 2px;
+}
+
+/* MEDIA QUERIES */
+@media (max-width: 768px) {
+  /* Hide nav links by default on mobile */
+  .nav-links {
+    display: none; /* we'll toggle this via JS */
+    position: absolute;
+    top: 60px; /* just below the navbar */
+    right: 0;
+    background-color: #000;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    border-top: 1px solid #2c2c2c;
+    width: 50%; 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+
+  .nav-links li a {
+    padding: 0.75rem 1rem;
+  }
+
+  /* Show hamburger icon */
+  .hamburger {
+    display: flex;
+  }
+}
+
+/* Toggle class for mobile nav */
+.nav-links.show {
+  display: flex !important; /* Force to show when toggled */
+}
+ 
+    /* --------------------------------
        HERO SECTION
     -------------------------------- */
-      .hero {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        background: #000; /* Keep hero fully black for a premium look */
-        padding: 5rem 1rem;
-        overflow: hidden;
-      }
-      .hero::before {
-        /* Subtle radial overlay for visual depth */
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(
-          circle at center,
-          rgba(255, 255, 255, 0.02),
-          transparent 70%
-        );
-        z-index: 0;
-      }
-      .hero-content {
-        position: relative;
-        max-width: 800px;
-        margin: 0 auto;
-        z-index: 1;
-        color: #f2f2f2;
-      }
-      .hero-title {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-      }
-      .hero-subtitle {
-        font-size: 1.2rem;
-        color: #cfcfcf;
-        margin-bottom: 2rem;
-      }
-      .hero-btn {
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        background-color: #6366f1;
-        color: #fff;
-        border-radius: 4px;
-        font-weight: 600;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-      }
-      .hero-btn:hover {
-        background-color: #5053c8;
-        transform: translateY(-2px);
-      }
-
-      /* --------------------------------
+    .hero {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: #000; /* Keep hero fully black for a premium look */
+      padding: 5rem 1rem;
+      overflow: hidden;
+    }
+    .hero::before {
+      /* Subtle radial overlay for visual depth */
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.02),
+        transparent 70%
+      );
+      z-index: 0;
+    }
+    .hero-content {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+      z-index: 1;
+      color: #f2f2f2;
+    }
+    .hero-title {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: #cfcfcf;
+      margin-bottom: 2rem;
+    }
+    .hero-btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: #6366f1;
+      color: #fff;
+      border-radius: 4px;
+      font-weight: 600;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .hero-btn:hover {
+      background-color: #5053c8;
+      transform: translateY(-2px);
+    }
+    
+    /* --------------------------------
        TRUSTED / PREMIUM SECTION
     -------------------------------- */
-      .trusted-by {
-        background-color: #0a0a0a;
-        padding: 3rem 0;
-        text-align: center;
-      }
-      .trusted-by h2 {
-        font-size: 1.8rem;
-        margin-bottom: 1rem;
-      }
-      .trusted-logos {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 2rem;
-        justify-content: center;
-        margin-top: 2rem;
-      }
-      .trusted-logo {
-        width: 120px;
-        height: 60px;
-        background: #1a1a1a;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 4px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        transition: transform 0.2s ease;
-      }
-      .trusted-logo:hover {
-        transform: translateY(-3px);
-      }
-      /* Replace .trusted-logo with actual brand images or placeholders */
-
-      /* --------------------------------
+    .trusted-by {
+      background-color: #0a0a0a;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    .trusted-by h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    .trusted-logos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    .trusted-logo {
+      width: 120px;
+      height: 60px;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease;
+    }
+    .trusted-logo:hover {
+      transform: translateY(-3px);
+    }
+    /* Replace .trusted-logo with actual brand images or placeholders */
+    
+    /* --------------------------------
        WHY CHOOSE US SECTION
     -------------------------------- */
-      .why-choose {
-        padding: 4rem 0;
-        background-color: #0a0a0a;
-      }
-      .why-choose-header {
-        text-align: center;
-        margin-bottom: 3rem;
-      }
-      .why-choose-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2rem;
-      }
-      .why-choose-item {
-        background-color: #111;
-        border: 1px solid #2c2c2c;
-        border-radius: 6px;
-        padding: 2rem;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-      }
-      .why-choose-item:hover {
-        background-color: #151515;
-        transform: translateY(-3px);
-      }
-      .why-choose-item h3 {
-        font-size: 1.3rem;
-        color: #6366f1;
-        margin-bottom: 1rem;
-      }
-      .why-choose-item p {
-        color: #ccc;
-        margin-bottom: 1rem;
-      }
-
-      /* --------------------------------
+    .why-choose {
+      padding: 4rem 0;
+      background-color: #0a0a0a;
+    }
+    .why-choose-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .why-choose-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .why-choose-item {
+      background-color: #111;
+      border: 1px solid #2c2c2c;
+      border-radius: 6px;
+      padding: 2rem;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .why-choose-item:hover {
+      background-color: #151515;
+      transform: translateY(-3px);
+    }
+    .why-choose-item h3 {
+      font-size: 1.3rem;
+      color: #6366f1;
+      margin-bottom: 1rem;
+    }
+    .why-choose-item p {
+      color: #ccc;
+      margin-bottom: 1rem;
+    }
+    
+    /* --------------------------------
        FEATURES SECTION
     -------------------------------- */
-      #features {
-        padding: 4rem 0;
-        background-color: #000;
-      }
-      .features-header {
-        text-align: center;
-        margin-bottom: 3rem;
-      }
-      .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2rem;
-      }
-      .feature-item {
-        background-color: #111;
-        border: 1px solid #2c2c2c;
-        border-radius: 8px;
-        padding: 2rem;
-        transition: transform 0.3s ease;
-      }
-      .feature-item:hover {
-        transform: translateY(-5px);
-      }
-      .feature-title {
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-        color: #6366f1;
-      }
-
-      /* --------------------------------
+    #features {
+      padding: 4rem 0;
+      background-color: #000;
+    }
+    .features-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .feature-item {
+      background-color: #111;
+      border: 1px solid #2c2c2c;
+      border-radius: 8px;
+      padding: 2rem;
+      transition: transform 0.3s ease;
+    }
+    .feature-item:hover {
+      transform: translateY(-5px);
+    }
+    .feature-title {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #6366f1;
+    }
+    
+    /* --------------------------------
        CTA SECTION: "Visit NPM"
     -------------------------------- */
-      .cta-npm {
-        background: #111;
-        padding: 4rem 1rem;
-        text-align: center;
-      }
-      .cta-npm h2 {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-      }
-      .cta-npm p {
-        color: #ccc;
-        max-width: 600px;
-        margin: 0.5rem auto 2rem auto;
-      }
-      .cta-npm .cta-btn {
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        background-color: #6366f1;
-        color: #fff;
-        border-radius: 4px;
-        font-weight: 600;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-      }
-      .cta-npm .cta-btn:hover {
-        background-color: #5053c8;
-        transform: translateY(-2px);
-      }
-
-      /* --------------------------------
+    .cta-npm {
+      background: #111;
+      padding: 4rem 1rem;
+      text-align: center;
+    }
+    .cta-npm h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .cta-npm p {
+      color: #ccc;
+      max-width: 600px;
+      margin: 0.5rem auto 2rem auto;
+    }
+    .cta-npm .cta-btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: #6366f1;
+      color: #fff;
+      border-radius: 4px;
+      font-weight: 600;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .cta-npm .cta-btn:hover {
+      background-color: #5053c8;
+      transform: translateY(-2px);
+    }
+    
+    /* --------------------------------
        PRICING SECTION
     -------------------------------- */
-      #pricing {
-        padding: 4rem 0;
-        background: #0a0a0a;
-      }
-      .pricing-header {
-        text-align: center;
-        margin-bottom: 3rem;
-      }
-      .pricing-cards {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 2rem;
-        justify-content: center;
-      }
-      .card {
-        background-color: #111;
-        border: 1px solid #2c2c2c;
-        width: 280px;
-        border-radius: 8px;
-        padding: 2rem;
-        text-align: center;
-        transition: transform 0.3s ease;
-      }
-      .card:hover {
-        transform: translateY(-5px);
-      }
-      .card h3 {
-        margin-bottom: 1rem;
-        font-size: 1.3rem;
-        color: #6366f1;
-      }
-      .card p {
-        margin-bottom: 1rem;
-        color: #ccc;
-      }
-      .price {
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin: 1rem 0;
-        color: #f2f2f2;
-      }
-      .btn-primary {
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        background-color: #6366f1;
-        color: #fff;
-        border-radius: 4px;
-        font-weight: 600;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-        margin-top: 1rem;
-      }
-      .btn-primary:hover {
-        background-color: #5053c8;
-        transform: translateY(-2px);
-      }
-
-      /* --------------------------------
+    #pricing {
+      padding: 4rem 0;
+      background: #0a0a0a;
+    }
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .pricing-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+    }
+    .card {
+      background-color: #111;
+      border: 1px solid #2c2c2c;
+      width: 280px;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card h3 {
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      color: #6366f1;
+    }
+    .card p {
+      margin-bottom: 1rem;
+      color: #ccc;
+    }
+    .price {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 1rem 0;
+      color: #f2f2f2;
+    }
+    .btn-primary {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: #6366f1;
+      color: #fff;
+      border-radius: 4px;
+      font-weight: 600;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      margin-top: 1rem;
+    }
+    .btn-primary:hover {
+      background-color: #5053c8;
+      transform: translateY(-2px);
+    }
+    
+    /* --------------------------------
        HOW TO USE SECTION
     -------------------------------- */
-      #how-to-use {
-        padding: 4rem 0;
-        background-color: #000;
-      }
-      .how-to-use-header {
-        text-align: center;
-        margin-bottom: 3rem;
-      }
-      .steps-container {
-        display: grid;
-        grid-template-columns: 1fr;
-        row-gap: 2rem;
-        max-width: 900px;
-        margin: 0 auto;
-      }
-      .step {
-        background-color: #111;
-        border: 1px solid #2c2c2c;
-        border-radius: 8px;
-        padding: 2rem;
-        transition: transform 0.3s ease;
-      }
-      .step:hover {
-        transform: translateY(-3px);
-      }
-      .step h4 {
-        color: #6366f1;
-        margin-bottom: 1rem;
-      }
+    /* "How to Use" Section Base Styles */
+#how-to-use {
+  /* Background color can match your site theme */
+  background-color: #000; 
+  padding: 4rem 1rem;
+  color: #e2e2e2;
+}
 
-      /* --------------------------------
+/* Centered header & short description */
+.how-to-use-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.how-to-use-header h2 {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Container for the steps */
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  /* On larger screens, show steps in 3 columns (or adjust to 2 columns if you prefer) */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Individual step styling */
+.step {
+  background-color: #111;
+  border: 1px solid #2c2c2c;
+  border-radius: 8px;
+  padding: 2rem;
+  transition: transform 0.3s ease;
+  /* Slight shadow for depth */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.step:hover {
+  transform: translateY(-3px);
+}
+
+/* Step title style */
+.step h4 {
+  font-size: 1.2rem;
+  color: #6366f1; /* Accent color */
+  margin-bottom: 1rem;
+}
+
+/* Code snippet styling (optional) */
+.step pre {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+  overflow-x: auto;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  /* Adjust text color if needed */
+  color: #ccc; 
+}
+
+/* Media Queries for smaller screens */
+@media (max-width: 768px) {
+  /* 
+    The grid will automatically stack 
+    because of "repeat(auto-fit, minmax(250px, 1fr))"
+  */
+  .how-to-use-header h2 {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .how-to-use-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .step {
+    padding: 1.5rem;
+  }
+}
+
+    /* --------------------------------
        CONTACT SECTION
     -------------------------------- */
-      #contact {
-        padding: 4rem 0;
-        background: #0a0a0a;
-      }
-      .contact-header {
-        text-align: center;
-        margin-bottom: 3rem;
-      }
-      .contact-content {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        gap: 2rem;
-        max-width: 900px;
-        margin: 0 auto;
-      }
-      .contact-form,
-      .contact-info {
-        flex: 1 1 300px;
-        background-color: #111;
-        border: 1px solid #2c2c2c;
-        border-radius: 8px;
-        padding: 2rem;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-      }
-      .contact-form h4,
-      .contact-info h4 {
-        margin-bottom: 1rem;
-        color: #6366f1;
-      }
-      .contact-form form {
-        display: grid;
-        grid-gap: 1rem;
-      }
-      .contact-form input,
-      .contact-form textarea {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #2c2c2c;
-        border-radius: 4px;
-        font-size: 1rem;
-        background-color: #1a1a1a;
-        color: #f2f2f2;
-      }
-      .contact-form input:focus,
-      .contact-form textarea:focus {
-        outline: none;
-        border-color: #6366f1;
-      }
-      .contact-form button {
-        background-color: #6366f1;
-        color: #fff;
-        font-size: 1rem;
-        font-weight: 600;
-        padding: 0.75rem;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-      }
-      .contact-form button:hover {
-        background-color: #5053c8;
-        transform: translateY(-2px);
-      }
-      .contact-info p {
-        margin-bottom: 0.5rem;
-        color: #ccc;
-      }
-
-      /* --------------------------------
+    #contact {
+      padding: 4rem 0;
+      background: #0a0a0a;
+    }
+    .contact-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .contact-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .contact-form,
+    .contact-info {
+      flex: 1 1 300px;
+      background-color: #111;
+      border: 1px solid #2c2c2c;
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    .contact-form h4,
+    .contact-info h4 {
+      margin-bottom: 1rem;
+      color: #6366f1;
+    }
+    .contact-form form {
+      display: grid;
+      grid-gap: 1rem;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #2c2c2c;
+      border-radius: 4px;
+      font-size: 1rem;
+      background-color: #1a1a1a;
+      color: #f2f2f2;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: #6366f1;
+    }
+    .contact-form button {
+      background-color: #6366f1;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .contact-form button:hover {
+      background-color: #5053c8;
+      transform: translateY(-2px);
+    }
+    .contact-info p {
+      margin-bottom: 0.5rem;
+      color: #ccc;
+    }
+    
+    /* --------------------------------
        MODERN FOOTER
     -------------------------------- */
-      footer {
-        background-color: #000;
-        border-top: 1px solid #2c2c2c;
-        padding: 2rem 0;
-        color: #777;
+    footer {
+      background-color: #000;
+      border-top: 1px solid #2c2c2c;
+      padding: 2rem 0;
+      color: #777;
+    }
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .footer-col {
+      flex: 1 1 200px;
+      margin: 1rem 0;
+    }
+    .footer-col h4 {
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+    .footer-col ul li {
+      margin-bottom: 0.5rem;
+    }
+    .footer-col ul li a {
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .footer-col ul li a:hover {
+      color: #6366f1;
+    }
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+    footer a {
+      color: #6366f1;
+      font-weight: 500;
+    }
+    
+    /* --------------------------------
+       RESPONSIVE BREAKPOINTS
+    -------------------------------- */
+    
+    /* Large Tablets / Desktops at 1024px */
+    @media (max-width: 1024px) {
+      /* Adjust hero title size slightly */
+      .hero-title {
+        font-size: 2.6rem;
       }
+      /* Adjust nav link spacing, etc. if needed */
+      .nav-links {
+        gap: 1.5rem;
+      }
+    }
+    
+    /* Tablets / Landscape phones at 768px */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none; /* Minimal approach; consider a burger menu for real usage */
+      }
+      .hero-title {
+        font-size: 2.2rem;
+      }
+      .features-grid,
+      .why-choose-grid,
+      .pricing-cards,
+      .trusted-logos,
+      .contact-content,
       .footer-content {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 2rem;
-        justify-content: space-between;
-        align-items: flex-start;
+        flex-direction: column;
+        display: block;
       }
-      .footer-col {
-        flex: 1 1 200px;
-        margin: 1rem 0;
+    }
+    
+    /* Small / Extra Small Phones at 480px */
+    @media (max-width: 480px) {
+      .hero-title {
+        font-size: 1.8rem;
+      }
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+      .hero-btn {
+        font-size: 0.95rem;
+        padding: 0.65rem 1.2rem;
+      }
+      .why-choose-item,
+      .feature-item,
+      .card,
+      .step,
+      .contact-form,
+      .contact-info {
+        padding: 1.5rem;
       }
       .footer-col h4 {
-        color: #fff;
-        margin-bottom: 1rem;
-      }
-      .footer-col ul li {
-        margin-bottom: 0.5rem;
+        font-size: 1rem;
       }
       .footer-col ul li a {
-        font-weight: 500;
-        transition: color 0.2s ease;
-      }
-      .footer-col ul li a:hover {
-        color: #6366f1;
+        font-size: 0.95rem;
       }
       .footer-bottom {
-        text-align: center;
-        margin-top: 2rem;
-        font-size: 0.9rem;
-        color: #888;
+        font-size: 0.8rem;
       }
-      footer a {
-        color: #6366f1;
-        font-weight: 500;
-      }
-
-      /* --------------------------------
-       RESPONSIVE
-    -------------------------------- */
-      @media (max-width: 768px) {
-        .nav-links {
-          display: none; /* Minimal approach; you might add a burger menu for real usage. */
-        }
-
-        .hero-title {
-          font-size: 2.2rem;
-        }
-
-        .features-grid,
-        .why-choose-grid,
-        .pricing-cards,
-        .trusted-logos,
-        .contact-content,
-        .footer-content {
-          flex-direction: column;
-          display: block;
-        }
-      }
+    }
+    
     </style>
   </head>
   <body>
     <!-- NAVBAR -->
-    <nav>
-      <div class="container nav-wrapper">
-        <div class="nav-logo">
-          <a href="#">MarketDepth<span>Gen</span></a>
-        </div>
-        <ul class="nav-links">
-          <li><a href="#why-choose">Why Choose</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#pricing">Pricing</a></li>
-          <li><a href="#how-to-use">How to Use</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </div>
-    </nav>
+    <!-- NAVBAR -->
+<nav>
+  <div class="container nav-wrapper">
+    <!-- Logo -->
+    <div class="nav-logo">
+      <a href="#">Trade<span>Sim</span></a>
+    </div>
+
+    <!-- Nav Links -->
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#why-choose">Why Choose</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#how-to-use">How to Use</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <!-- Hamburger Icon -->
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</nav>
+
 
     <!-- HERO SECTION -->
     <section class="hero">
@@ -798,11 +978,12 @@
     <section id="how-to-use">
       <div class="container how-to-use-header">
         <h2>How to Use</h2>
-        <p style="color: #ccc">
+        <p>
           Quickly integrate into any Node.js project. Scale on-demand, and build
           advanced trading simulations in minutes.
         </p>
       </div>
+    
       <div class="container steps-container">
         <!-- Step 1 -->
         <div class="step">
@@ -811,34 +992,29 @@
             Install via npm: <code>npm install market-depth-generator</code>
           </p>
         </div>
+    
         <!-- Step 2 -->
         <div class="step">
           <h4>2. Basic Setup</h4>
-          <pre
-            style="
-              background: rgba(255, 255, 255, 0.03);
-              padding: 1rem;
-              overflow-x: auto;
-            "
-          >
-const MarketDepthGenerator = require("market-depth-generator");
-const generator = new MarketDepthGenerator({
-  redisHost: "127.0.0.1",
-  redisPort: 6379,
-  symbols: ["BTCUSD", "ETHUSD"],
-  middlePrice: 305.12,
-});
-
-(async () => {
-  await generator.init();
-  // Start your simulation
-  setInterval(() => {
-    generator.simulateTrade("BTCUSDT");
-  }, 1000);
-})();
-</pre
-          >
+          <pre>
+    const MarketDepthGenerator = require("market-depth-generator");
+    const generator = new MarketDepthGenerator({
+      redisHost: "127.0.0.1",
+      redisPort: 6379,
+      symbols: ["BTCUSD", "ETHUSD"],
+      middlePrice: 305.12,
+    });
+    
+    (async () => {
+      await generator.init();
+      // Start your simulation
+      setInterval(() => {
+        generator.simulateTrade("BTCUSDT");
+      }, 1000);
+    })();
+          </pre>
         </div>
+    
         <!-- Step 3 -->
         <div class="step">
           <h4>3. Connect WebSocket</h4>
@@ -849,6 +1025,7 @@ const generator = new MarketDepthGenerator({
         </div>
       </div>
     </section>
+    
 
     <!-- CONTACT SECTION -->
     <section id="contact">
@@ -895,7 +1072,7 @@ const generator = new MarketDepthGenerator({
             <em
               >See
               <a
-                href="https://www.npmjs.com/package/market-depth-generator"
+                href="https://github.com/monupareeklg/trade-data-generator"
                 target="_blank"
                 >npm statistics</a
               >
@@ -964,5 +1141,17 @@ const generator = new MarketDepthGenerator({
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
+    <!-- Just before closing </body> tag -->
+<script>
+  // Grab elements
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('nav-links');
+
+  hamburger.addEventListener('click', () => {
+    // Toggle the 'show' class on the nav links 
+    navLinks.classList.toggle('show');
+  });
+</script>
+
   </body>
 </html>
