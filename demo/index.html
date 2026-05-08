@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TradeSim — Live Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js"></script>
+
+  <style>
+    :root {
+      --bg:       #040608;
+      --surface:  #0c0f14;
+      --border:   #1a1f2a;
+      --text:     #e8edf5;
+      --muted:    #5a6478;
+      --accent:   #00d4aa;
+      --accent2:  #0098ff;
+      --red:      #f6465d;
+      --green:    #00d4aa;
+      --mono:     'DM Mono', monospace;
+      --sans:     'DM Sans', sans-serif;
+      --display:  'Syne', sans-serif;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Top Nav ── */
+    .nav {
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+
+    .nav-logo {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-badge {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      background: rgba(0,212,170,0.1);
+      border: 1px solid rgba(0,212,170,0.2);
+      border-radius: 100px;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.2; }
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-link {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover { color: var(--text); }
+
+    .nav-npm {
+      font-size: 0.78rem;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      transition: background 0.2s;
+      font-family: var(--mono);
+    }
+
+    .nav-npm:hover { background: rgba(0,212,170,0.1); }
+
+    /* ── Pair tabs ── */
+    .pair-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0 1.5rem;
+      height: 46px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+      overflow-x: auto;
+    }
+
+    .pair-tab {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      background: none;
+    }
+
+    .pair-tab:hover { background: rgba(255,255,255,0.04); }
+
+    .pair-tab.active {
+      background: rgba(0,212,170,0.08);
+      border-color: rgba(0,212,170,0.2);
+    }
+
+    .pair-name {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .pair-price {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .pair-chg {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .pair-chg.up   { color: var(--green); }
+    .pair-chg.down { color: var(--red); }
+
+    /* ── Main layout ── */
+    .main {
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Chart area ── */
+    .chart-area {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    /* ── Ticker header ── */
+    .ticker-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-end;
+      gap: 2rem;
+      flex-shrink: 0;
+    }
+
+    .ticker-symbol {
+      font-family: var(--display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .ticker-price {
+      font-family: var(--mono);
+      font-size: 1.8rem;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .ticker-change {
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.3rem;
+    }
+
+    .ticker-change.up {
+      color: var(--green);
+      background: rgba(0,212,170,0.1);
+    }
+
+    .ticker-change.down {
+      color: var(--red);
+      background: rgba(246,70,93,0.1);
+    }
+
+    .ticker-stats {
+      display: flex;
+      gap: 2rem;
+      margin-left: auto;
+    }
+
+    .stat {
+      text-align: right;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-value {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--text);
+    }
+
+    /* ── Interval tabs ── */
+    .interval-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.5rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .interval-btn {
+      padding: 0.25rem 0.6rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--muted);
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .interval-btn:hover { color: var(--text); }
+
+    .interval-btn.active {
+      background: rgba(0,212,170,0.1);
+      color: var(--accent);
+    }
+
+    /* ── Chart container ── */
+    #chart {
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* ── Right panel ── */
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Order book ── */
+    .orderbook {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .ob-labels {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      padding: 0.4rem 1rem;
+      font-size: 0.68rem;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .ob-labels span:last-child { text-align: right; }
+    .ob-labels span:nth-child(2) { text-align: center; }
+
+    .ob-asks {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    .ob-spread {
+      padding: 0.4rem 1rem;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .spread-price {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .spread-price.up   { color: var(--green); }
+    .spread-price.down { color: var(--red); }
+
+    .spread-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+
+    .ob-bids {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .ob-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      padding: 0.18rem 1rem;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      position: relative;
+      transition: opacity 0.15s;
+    }
+
+    .ob-row:hover { background: rgba(255,255,255,0.02); }
+
+    .ob-row .price { font-weight: 500; }
+    .ob-row .size  { text-align: center; color: var(--muted); }
+    .ob-row .total { text-align: right; color: var(--muted); }
+
+    .ob-row.ask .price { color: var(--red); }
+    .ob-row.bid .price { color: var(--green); }
+
+    .ob-bar {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      opacity: 0.08;
+      border-radius: 2px 0 0 2px;
+    }
+
+    .ob-bar.ask { background: var(--red); }
+    .ob-bar.bid { background: var(--green); }
+
+    /* ── Recent trades ── */
+    .trades-panel {
+      border-top: 1px solid var(--border);
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .trade-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      padding: 0.2rem 1rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+    }
+
+    .trade-row .t-price { font-weight: 500; }
+    .trade-row .t-size  { text-align: center; color: var(--muted); }
+    .trade-row .t-time  { text-align: right; color: var(--muted); }
+
+    .trade-row.buy  .t-price { color: var(--green); }
+    .trade-row.sell .t-price { color: var(--red); }
+
+    .trades-list {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Bottom bar ── */
+    .bottom-bar {
+      height: 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      gap: 1.5rem;
+      flex-shrink: 0;
+      background: var(--surface);
+    }
+
+    .bottom-item {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .bottom-item span { color: var(--text); }
+
+    .powered-by {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+
+    .powered-by a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <div class="nav">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <div class="nav-logo">Trade<span>Sim</span></div>
+      <div class="nav-badge">
+        <div class="live-dot"></div>
+        Live Demo
+      </div>
+    </div>
+    <div class="nav-right">
+      <a href="/" class="nav-link">← Back to home</a>
+      <a href="https://www.npmjs.com/package/trade-data-generator" target="_blank" class="nav-npm">npm install</a>
+    </div>
+  </div>
+
+  <!-- PAIR TABS -->
+  <div class="pair-bar" id="pair-bar"></div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- CHART AREA -->
+    <div class="chart-area">
+      <div class="ticker-header">
+        <div>
+          <div class="ticker-symbol" id="sym">BTC/USDT</div>
+          <div style="display:flex;align-items:baseline;gap:0.75rem;margin-top:0.25rem;">
+            <div class="ticker-price" id="price">—</div>
+            <div class="ticker-change up" id="change">—</div>
+          </div>
+        </div>
+        <div class="ticker-stats">
+          <div class="stat">
+            <div class="stat-label">24h High</div>
+            <div class="stat-value" id="high">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">24h Low</div>
+            <div class="stat-value" id="low">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Volume</div>
+            <div class="stat-value" id="vol">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Bid</div>
+            <div class="stat-value" style="color:var(--green)" id="bid">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Ask</div>
+            <div class="stat-value" style="color:var(--red)" id="ask">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="interval-bar">
+        <button class="interval-btn active" onclick="setInterval_('1m')">1m</button>
+        <button class="interval-btn" onclick="setInterval_('5m')">5m</button>
+        <button class="interval-btn" onclick="setInterval_('15m')">15m</button>
+        <button class="interval-btn" onclick="setInterval_('1h')">1h</button>
+      </div>
+
+      <div id="chart"></div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+      <!-- ORDER BOOK -->
+      <div class="orderbook">
+        <div class="panel-header">
+          <span>Order Book</span>
+          <span style="font-family:var(--mono);font-size:0.68rem;">10 levels</span>
+        </div>
+        <div class="ob-labels">
+          <span>Price</span>
+          <span>Size</span>
+          <span>Total</span>
+        </div>
+        <div class="ob-asks" id="ob-asks"></div>
+        <div class="ob-spread">
+          <div class="spread-price up" id="spread-price">—</div>
+          <div class="spread-label" id="spread-val">Spread —</div>
+        </div>
+        <div class="ob-bids" id="ob-bids"></div>
+      </div>
+
+      <!-- RECENT TRADES -->
+      <div class="trades-panel">
+        <div class="panel-header">
+          <span>Recent Trades</span>
+        </div>
+        <div class="ob-labels">
+          <span>Price</span>
+          <span>Size</span>
+          <span>Time</span>
+        </div>
+        <div class="trades-list" id="trades-list"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <div class="bottom-item">Market <span id="market-type">Crypto</span></div>
+    <div class="bottom-item">Status <span style="color:var(--green)">Open</span></div>
+    <div class="bottom-item">Interval <span id="bot-interval">1000ms</span></div>
+    <div class="powered-by">
+      Powered by <a href="https://www.npmjs.com/package/trade-data-generator" target="_blank">trade-data-generator</a>
+    </div>
+  </div>
+
+<script>
+// ── Pairs config ─────────────────────────── //
+const PAIRS = [
+  { symbol: 'BTC/USDT', startPrice: 45000, volatility: 0.003, precision: 2, type: 'Crypto',  spreadPct: 0.0008 },
+  { symbol: 'ETH/USDT', startPrice: 2800,  volatility: 0.004, precision: 2, type: 'Crypto',  spreadPct: 0.0009 },
+  { symbol: 'SOL/USDT', startPrice: 120,   volatility: 0.006, precision: 3, type: 'Crypto',  spreadPct: 0.001  },
+  { symbol: 'AAPL',     startPrice: 175.5, volatility: 0.002, precision: 2, type: 'Equity',  spreadPct: 0.0005 },
+  { symbol: 'EUR/USD',  startPrice: 1.0845,volatility: 0.0003,precision: 5, type: 'Forex',   spreadPct: 0.0002 },
+]
+
+// ── State ─────────────────────────────────── //
+let activePair   = PAIRS[0]
+let activeInt    = '1m'
+let chartObj     = null
+let candleSeries = null
+let timer        = null
+let pairStates   = {}
+
+// ── Price Engine (ported from library) ────── //
+class PriceEngine {
+  constructor(cfg) {
+    this.startPrice  = cfg.startPrice
+    this.volatility  = cfg.volatility  || 0.002
+    this.precision   = cfg.precision   || 2
+    this.spreadPct   = cfg.spreadPct   || 0.001
+    this.currentPrice = cfg.startPrice
+    this.previousPrice = cfg.startPrice
+    this.high24h     = cfg.startPrice
+    this.low24h      = cfg.startPrice
+    this.open24h     = cfg.startPrice
+    this.totalVolume = 0
+  }
+
+  next() {
+    this.previousPrice = this.currentPrice
+    const u = Math.random(), v = Math.random()
+    const rnd = Math.sqrt(-2 * Math.log(u || 1e-10)) * Math.cos(2 * Math.PI * v)
+    const deviation = (this.currentPrice - this.startPrice) / this.startPrice
+    const pctChange = rnd * this.volatility - deviation * 0.05
+    let newPrice = this.currentPrice * (1 + pctChange)
+    newPrice = Math.max(this.startPrice * 0.5, Math.min(this.startPrice * 1.5, newPrice))
+    newPrice = this.round(newPrice)
+    this.currentPrice = newPrice
+    if (newPrice > this.high24h) this.high24h = newPrice
+    if (newPrice < this.low24h)  this.low24h  = newPrice
+    const volume = Math.round(100 + Math.random() * 9900)
+    this.totalVolume += volume
+    const halfSpread = this.round(newPrice * this.spreadPct * 0.5)
+    return {
+      price:     newPrice,
+      bid:       this.round(newPrice - halfSpread),
+      ask:       this.round(newPrice + halfSpread),
+      spread:    this.round(halfSpread * 2),
+      volume,
+      change:    this.round(newPrice - this.open24h),
+      changePct: this.round(((newPrice - this.open24h) / this.open24h) * 100),
+      high24h:   this.high24h,
+      low24h:    this.low24h,
+    }
+  }
+
+  round(v) { return parseFloat(v.toFixed(this.precision)) }
+}
+
+// ── Order Book Generator ───────────────────── //
+function generateBook(price, precision, spreadPct) {
+  const halfSpread = parseFloat((price * spreadPct * 0.5).toFixed(precision))
+  const tickSize   = parseFloat(Math.pow(10, -precision).toFixed(precision))
+  const bids = [], asks = []
+  for (let i = 0; i < 10; i++) {
+    const taper = Math.max(0.3, 1 - i * 0.07)
+    const vol   = Math.round(100 + Math.random() * 4900 * taper)
+    bids.push({ price: parseFloat((price - halfSpread - i * tickSize).toFixed(precision)), volume: vol })
+    asks.push({ price: parseFloat((price + halfSpread + i * tickSize).toFixed(precision)), volume: Math.round(100 + Math.random() * 4900 * taper) })
+  }
+  return { bids, asks }
+}
+
+// ── Candle Manager (simple) ───────────────── //
+const INTERVAL_MS = { '1m': 60000, '5m': 300000, '15m': 900000, '1h': 3600000 }
+
+class CandleStore {
+  constructor() { this.candles = {}; this.current = {} }
+
+  tick(price, volume, ts, interval) {
+    const ms     = INTERVAL_MS[interval]
+    const bucket = Math.floor(ts / ms) * ms
+
+    if (!this.current[interval] || ts >= this.current[interval].closeTime) {
+      if (this.current[interval]) {
+        const c = this.current[interval]
+        c.closed = true
+        if (!this.candles[interval]) this.candles[interval] = []
+        this.candles[interval].push(c)
+        if (this.candles[interval].length > 500) this.candles[interval].shift()
+      }
+      this.current[interval] = {
+        time: bucket / 1000, open: price, high: price,
+        low: price, close: price, volume, closeTime: bucket + ms, closed: false
+      }
+    } else {
+      const c = this.current[interval]
+      if (price > c.high) c.high  = price
+      if (price < c.low)  c.low   = price
+      c.close  = price
+      c.volume += volume
+    }
+
+    return this.current[interval]
+  }
+
+  getHistory(interval) {
+    return this.candles[interval] || []
+  }
+
+  getCurrent(interval) {
+    return this.current[interval] || null
+  }
+}
+
+// ── Initialize pair states ─────────────────── //
+PAIRS.forEach(p => {
+  pairStates[p.symbol] = {
+    engine:    new PriceEngine(p),
+    store:     new CandleStore(),
+    lastTick:  null,
+    trades:    [],
+  }
+})
+
+// ── Format helpers ─────────────────────────── //
+const fmt = (v, p) => v?.toLocaleString('en-US', { minimumFractionDigits: p, maximumFractionDigits: p }) ?? '—'
+const fmtTime = (ts) => new Date(ts).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })
+
+// ── Build pair tabs ────────────────────────── //
+function buildPairTabs() {
+  const bar = document.getElementById('pair-bar')
+  bar.innerHTML = ''
+  PAIRS.forEach(p => {
+    const state = pairStates[p.symbol]
+    const tick  = state.lastTick
+    const el    = document.createElement('div')
+    el.className = 'pair-tab' + (p.symbol === activePair.symbol ? ' active' : '')
+    el.id = 'tab-' + p.symbol.replace('/', '-')
+    el.innerHTML = `
+      <span class="pair-name">${p.symbol}</span>
+      <span class="pair-price" id="tab-price-${p.symbol.replace('/', '-')}">${tick ? fmt(tick.price, p.precision) : '—'}</span>
+      <span class="pair-chg ${tick && tick.changePct >= 0 ? 'up' : 'down'}" id="tab-chg-${p.symbol.replace('/', '-')}">
+        ${tick ? (tick.changePct >= 0 ? '+' : '') + tick.changePct.toFixed(2) + '%' : '—'}
+      </span>
+    `
+    el.onclick = () => switchPair(p)
+    bar.appendChild(el)
+  })
+}
+
+// ── Init chart ─────────────────────────────── //
+function initChart() {
+  if (chartObj) { chartObj.remove(); chartObj = null }
+  const container = document.getElementById('chart')
+  chartObj = LightweightCharts.createChart(container, {
+    layout:     { background: { color: '#040608' }, textColor: '#5a6478' },
+    grid:       { vertLines: { color: '#0f1419' }, horzLines: { color: '#0f1419' } },
+    crosshair:  { mode: LightweightCharts.CrosshairMode.Normal },
+    rightPriceScale: { borderColor: '#1a1f2a' },
+    timeScale:  { borderColor: '#1a1f2a', timeVisible: true, secondsVisible: false },
+    width:  container.clientWidth,
+    height: container.clientHeight,
+  })
+
+  candleSeries = chartObj.addCandlestickSeries({
+    upColor:       '#00d4aa',
+    downColor:     '#f6465d',
+    borderUpColor: '#00d4aa',
+    borderDownColor: '#f6465d',
+    wickUpColor:   '#00d4aa',
+    wickDownColor: '#f6465d',
+  })
+
+  // Load history
+  const state   = pairStates[activePair.symbol]
+  const history = state.store.getHistory(activeInt)
+  if (history.length > 0) {
+    candleSeries.setData(history.map(c => ({
+      time: c.time, open: c.open, high: c.high, low: c.low, close: c.close
+    })))
+  }
+
+  window.addEventListener('resize', () => {
+    if (chartObj) {
+      chartObj.applyOptions({
+        width:  container.clientWidth,
+        height: container.clientHeight,
+      })
+    }
+  })
+}
+
+// ── Update order book ──────────────────────── //
+function updateOrderBook(price, precision, spreadPct) {
+  const book    = generateBook(price, precision, spreadPct)
+  const asksEl  = document.getElementById('ob-asks')
+  const bidsEl  = document.getElementById('ob-bids')
+  const maxVol  = Math.max(...book.bids.map(b => b.volume), ...book.asks.map(a => a.volume))
+
+  asksEl.innerHTML = ''
+  // Asks in reverse so best ask is closest to spread
+  ;[...book.asks].reverse().forEach(a => {
+    const pct = (a.volume / maxVol * 100).toFixed(0)
+    const row = document.createElement('div')
+    row.className = 'ob-row ask'
+    row.innerHTML = `
+      <div class="ob-bar ask" style="width:${pct}%"></div>
+      <span class="price">${fmt(a.price, precision)}</span>
+      <span class="size">${a.volume.toLocaleString()}</span>
+      <span class="total">${(a.price * a.volume).toFixed(0)}</span>
+    `
+    asksEl.appendChild(row)
+  })
+
+  bidsEl.innerHTML = ''
+  book.bids.forEach(b => {
+    const pct = (b.volume / maxVol * 100).toFixed(0)
+    const row = document.createElement('div')
+    row.className = 'ob-row bid'
+    row.innerHTML = `
+      <div class="ob-bar bid" style="width:${pct}%"></div>
+      <span class="price">${fmt(b.price, precision)}</span>
+      <span class="size">${b.volume.toLocaleString()}</span>
+      <span class="total">${(b.price * b.volume).toFixed(0)}</span>
+    `
+    bidsEl.appendChild(row)
+  })
+
+  // Spread
+  const spread = book.asks[0].price - book.bids[0].price
+  const spreadPriceEl = document.getElementById('spread-price')
+  const lastTick = pairStates[activePair.symbol].lastTick
+  if (lastTick) {
+    const up = lastTick.price >= lastTick.previous
+    spreadPriceEl.textContent = fmt(lastTick.price, precision)
+    spreadPriceEl.className   = 'spread-price ' + (up ? 'up' : 'down')
+  }
+  document.getElementById('spread-val').textContent = `Spread ${spread.toFixed(precision)}`
+}
+
+// ── Update recent trades ───────────────────── //
+function addTrade(price, volume, precision) {
+  const state = pairStates[activePair.symbol]
+  const lastTick = state.lastTick
+  const side  = lastTick && price >= lastTick.previous ? 'buy' : 'sell'
+  state.trades.unshift({ price, volume, side, time: Date.now() })
+  if (state.trades.length > 20) state.trades.pop()
+
+  const list = document.getElementById('trades-list')
+  list.innerHTML = ''
+  state.trades.forEach(t => {
+    const row = document.createElement('div')
+    row.className = `trade-row ${t.side}`
+    row.innerHTML = `
+      <span class="t-price">${fmt(t.price, precision)}</span>
+      <span class="t-size">${t.volume.toLocaleString()}</span>
+      <span class="t-time">${fmtTime(t.time)}</span>
+    `
+    list.appendChild(row)
+  })
+}
+
+// ── Main tick ──────────────────────────────── //
+function tick() {
+  const ts    = Date.now()
+  const state = pairStates[activePair.symbol]
+  const t     = state.engine.next()
+  state.lastTick = { ...t, previous: state.engine.previousPrice }
+
+  // Update candle
+  const candle = state.store.tick(t.price, t.volume, ts, activeInt)
+  if (candleSeries && candle) {
+    candleSeries.update({
+      time: candle.time, open: candle.open,
+      high: candle.high, low: candle.low, close: candle.close
+    })
+  }
+
+  // Update ticker
+  const p   = activePair.precision
+  const up  = t.changePct >= 0
+  document.getElementById('price').textContent  = fmt(t.price, p)
+  document.getElementById('high').textContent   = fmt(t.high24h, p)
+  document.getElementById('low').textContent    = fmt(t.low24h, p)
+  document.getElementById('vol').textContent    = t.volume.toLocaleString()
+  document.getElementById('bid').textContent    = fmt(t.bid, p)
+  document.getElementById('ask').textContent    = fmt(t.ask, p)
+
+  const chgEl = document.getElementById('change')
+  chgEl.textContent = (up ? '+' : '') + t.changePct.toFixed(2) + '%'
+  chgEl.className   = 'ticker-change ' + (up ? 'up' : 'down')
+
+  // Update order book
+  updateOrderBook(t.price, p, activePair.spreadPct)
+
+  // Add trade
+  addTrade(t.price, t.volume, p)
+
+  // Update all tabs in background
+  PAIRS.forEach(pair => {
+    if (pair.symbol !== activePair.symbol) {
+      const s = pairStates[pair.symbol]
+      const bt = s.engine.next()
+      s.lastTick = { ...bt, previous: s.engine.previousPrice }
+      s.store.tick(bt.price, bt.volume, ts, activeInt)
+    }
+
+    // Update tab display
+    const key   = pair.symbol.replace('/', '-')
+    const pEl   = document.getElementById(`tab-price-${key}`)
+    const cEl   = document.getElementById(`tab-chg-${key}`)
+    const state = pairStates[pair.symbol]
+    const lt    = state.lastTick
+    if (pEl && lt) {
+      pEl.textContent   = fmt(lt.price, pair.precision)
+      cEl.textContent   = (lt.changePct >= 0 ? '+' : '') + lt.changePct.toFixed(2) + '%'
+      cEl.className     = 'pair-chg ' + (lt.changePct >= 0 ? 'up' : 'down')
+    }
+  })
+}
+
+// ── Switch pair ────────────────────────────── //
+function switchPair(pair) {
+  activePair = pair
+  document.getElementById('sym').textContent         = pair.symbol
+  document.getElementById('market-type').textContent = pair.type
+
+  // Update active tab
+  document.querySelectorAll('.pair-tab').forEach(el => el.classList.remove('active'))
+  const tab = document.getElementById('tab-' + pair.symbol.replace('/', '-'))
+  if (tab) tab.classList.add('active')
+
+  // Reinit chart with new pair history
+  initChart()
+
+  // Clear trades
+  pairStates[pair.symbol].trades = []
+  document.getElementById('trades-list').innerHTML = ''
+}
+
+// ── Switch interval ────────────────────────── //
+function setInterval_(int) {
+  activeInt = int
+  document.querySelectorAll('.interval-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === int)
+  })
+  initChart()
+}
+
+// ── Start ──────────────────────────────────── //
+buildPairTabs()
+initChart()
+
+// Pre-warm 100 ticks so chart has data immediately
+for (let i = 0; i < 100; i++) {
+  const ts = Date.now() - (100 - i) * 1000
+  PAIRS.forEach(pair => {
+    const s = pairStates[pair.symbol]
+    const t = s.engine.next()
+    s.lastTick = { ...t, previous: s.engine.previousPrice }
+    s.store.tick(t.price, t.volume, ts, '1m')
+    s.store.tick(t.price, t.volume, ts, '5m')
+    s.store.tick(t.price, t.volume, ts, '15m')
+    s.store.tick(t.price, t.volume, ts, '1h')
+  })
+}
+
+// Reload chart with pre-warmed data
+initChart()
+buildPairTabs()
+
+// Live ticks every second
+timer = setInterval(tick, 1000)
+</script>
+</body>
+</html>
