@@ -22,6 +22,20 @@
     <meta property="og:url" content="https://tradesim.dev" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta http-equiv="content-language" content="en" />
+    <meta property="og:image" content="https://tradesim.dev/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:image" content="https://tradesim.dev/og-image.png" />
+    <meta name="twitter:site" content="@stackOfLuv" />
+    <meta name="twitter:creator" content="@stackOfLuv" />
+
+    <meta name="theme-color" content="#00d4aa" />
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
     <title>TradeSim — Realistic Market Data for Trading UIs</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,6 +43,8 @@
       href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
+
+    <link rel="canonical" href="https://tradesim.dev/" />
 
     <style>
       :root {
@@ -969,7 +985,7 @@ feed.<span class="fn">start</span>()</pre>
       <div class="container">
         <div class="stats-grid">
           <div>
-            <div class="stat-value" id="stat-downloads">83+</div>
+            <div class="stat-value" id="stat-downloads">528+</div>
             <div class="stat-label">Monthly downloads</div>
           </div>
           <div>
@@ -1374,6 +1390,72 @@ feed.<span class="fn">start</span>()</pre>
       }
 
       setInterval(updateTickers, 1200);
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "trade-data-generator",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Node.js",
+        "description": "Generate realistic market data for trading UIs. Equity, forex and crypto. Zero dependencies. EventEmitter API.",
+        "url": "https://tradesim.dev",
+        "downloadUrl": "https://www.npmjs.com/package/trade-data-generator",
+        "softwareVersion": "2.0.0",
+        "license": "https://opensource.org/licenses/MIT",
+        "author": {
+          "@type": "Person",
+          "name": "Love Pareek",
+          "url": "https://github.com/monupareeklg"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "keywords": "market data, trading, npm, nodejs, websocket, crypto, forex, equity"
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is trade-data-generator?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "trade-data-generator is a Node.js npm library that generates realistic synthetic market data for trading UIs. It supports equity, forex and crypto with zero dependencies and zero API keys required."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I install trade-data-generator?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Install via npm: npm install trade-data-generator. Works with Node.js 14+. Zero dependencies."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does trade-data-generator work with WebSocket?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. trade-data-generator uses EventEmitter API so you can pipe events into any WebSocket server — Socket.io, ws, Pusher, Ably or any transport layer."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is trade-data-generator free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. trade-data-generator is completely free and open source under MIT license. No API keys, no rate limits, no subscriptions required."
+            }
+          }
+        ]
+      }
     </script>
   </body>
 </html>
