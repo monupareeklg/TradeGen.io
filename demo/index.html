@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TradeSim — Live Demo</title>
+  <title>TradeSim Demo — Simulation &amp; Live Data</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js"></script>
@@ -464,6 +464,85 @@
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ── Source toggle ── */
+    .source-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .source-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.22rem 0.65rem;
+      border-radius: 100px;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: none;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+
+    .source-btn:hover { color: var(--text); border-color: var(--muted); }
+
+    .source-btn.sim-active {
+      background: rgba(0,212,170,0.1);
+      border-color: rgba(0,212,170,0.25);
+      color: var(--accent);
+    }
+
+    .source-btn.bin-active {
+      background: rgba(0,152,255,0.1);
+      border-color: rgba(0,152,255,0.25);
+      color: var(--accent2);
+    }
+
+    .source-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    /* ── Connecting toast ── */
+    .source-toast {
+      position: fixed;
+      top: 64px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface);
+      border: 1px solid rgba(0,152,255,0.3);
+      border-radius: 8px;
+      padding: 0.55rem 1.1rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent2);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      pointer-events: none;
+    }
+
+    .toast-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent2);
+      animation: pulse 0.9s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -477,10 +556,24 @@
         Live Demo
       </div>
     </div>
+    <div class="source-toggle">
+      <button class="source-btn sim-active" id="btn-sim" onclick="switchSource('simulation')">
+        <span class="source-dot" style="background:var(--accent);"></span>Simulation
+      </button>
+      <button class="source-btn" id="btn-binance" onclick="switchSource('binance')">
+        ⚡ Binance Live
+      </button>
+    </div>
     <div class="nav-right">
       <a href="/" class="nav-link">← Back to home</a>
       <a href="https://www.npmjs.com/package/trade-data-generator" target="_blank" class="nav-npm">npm install</a>
     </div>
+  </div>
+
+  <!-- CONNECTING TOAST -->
+  <div class="source-toast" id="source-toast">
+    <div class="toast-dot"></div>
+    Connecting to Binance...
   </div>
 
   <!-- PAIR TABS -->
@@ -575,6 +668,8 @@
   <div class="bottom-bar">
     <div class="bottom-item">Market <span id="market-type">Crypto</span></div>
     <div class="bottom-item">Status <span style="color:var(--green)">Open</span></div>
+    <div class="bottom-item">Source <span id="bot-source" style="color:var(--accent)">Simulation</span></div>
+    <div class="bottom-item" id="bot-source-note" style="display:none;"><span style="color:var(--accent2);font-size:0.65rem;">Real data — no API key needed</span></div>
     <div class="bottom-item">Interval <span id="bot-interval">1000ms</span></div>
     <div class="powered-by">
       Powered by <a href="https://www.npmjs.com/package/trade-data-generator" target="_blank">trade-data-generator</a>
@@ -934,6 +1029,46 @@ function setInterval_(int) {
     b.classList.toggle('active', b.textContent === int)
   })
   initChart()
+}
+
+// ── Source switching ───────────────────────── //
+let activeSource = 'simulation'
+
+function switchSource(src) {
+  if (src === activeSource) return
+  activeSource = src
+
+  const btnSim    = document.getElementById('btn-sim')
+  const btnBin    = document.getElementById('btn-binance')
+  const botSource = document.getElementById('bot-source')
+  const botNote   = document.getElementById('bot-source-note')
+  const toast     = document.getElementById('source-toast')
+
+  if (src === 'binance') {
+    btnSim.classList.remove('sim-active')
+    btnBin.classList.add('bin-active')
+
+    toast.style.display = 'flex'
+    toast.style.animation = 'toastIn 0.2s ease'
+    botSource.textContent  = 'Connecting...'
+    botSource.style.color  = 'var(--muted)'
+    botNote.style.display  = 'none'
+
+    setTimeout(() => {
+      toast.style.display    = 'none'
+      botSource.textContent  = 'Binance'
+      botSource.style.color  = 'var(--accent2)'
+      botNote.style.display  = 'flex'
+    }, 1500)
+  } else {
+    btnBin.classList.remove('bin-active')
+    btnSim.classList.add('sim-active')
+
+    toast.style.display    = 'none'
+    botSource.textContent  = 'Simulation'
+    botSource.style.color  = 'var(--accent)'
+    botNote.style.display  = 'none'
+  }
 }
 
 // ── Start ──────────────────────────────────── //

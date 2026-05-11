@@ -917,14 +917,13 @@
         </div>
       </div>
 
-      <div class="hero-badge"><span>●</span> v2.0.0 — Zero Dependencies</div>
+      <div class="hero-badge"><span>●</span> v3.0.0 — Simulation + Live Data</div>
 
       <h1>Realistic market data<br />for <em>trading UIs</em></h1>
 
       <p>
-        Generate price ticks, order book depth and OHLCV candles for equity,
-        forex and crypto. No API keys. No rate limits. Plug into any WebSocket
-        server.
+        Simulation for development. Real exchange data for production. Same API.
+        Same format. One library.
       </p>
 
       <div class="hero-actions">
@@ -964,17 +963,23 @@
         </div>
         <pre><span class="kw">const</span> { <span class="acc">MarketFeed</span> } = <span class="fn">require</span>(<span class="str">'trade-data-generator'</span>)
 
+<span class="cm">// Development — fake data</span>
 <span class="kw">const</span> feed = <span class="kw">new</span> <span class="acc">MarketFeed</span>({
-  type:  <span class="str">'crypto'</span>,
-  pairs: [
-    { symbol: <span class="str">'BTC/USDT'</span>, startPrice: <span class="num">45000</span>, volatility: <span class="num">0.004</span> },
-    { symbol: <span class="str">'ETH/USDT'</span>, startPrice: <span class="num">2800</span>,  volatility: <span class="num">0.005</span> },
-  ]
+  source: <span class="str">'simulation'</span>,
+  type:   <span class="str">'crypto'</span>,
+  pairs:  [{ symbol: <span class="str">'BTC/USDT'</span>, startPrice: <span class="num">45000</span> }]
 })
 
-feed.<span class="fn">on</span>(<span class="str">'tick'</span>,   (data) => <span class="cm">/* → your WebSocket server */</span>)
-feed.<span class="fn">on</span>(<span class="str">'candle'</span>, (data) => <span class="cm">/* → OHLCV complete candle  */</span>)
-feed.<span class="fn">on</span>(<span class="str">'depth'</span>,  (data) => <span class="cm">/* → order book snapshot   */</span>)
+<span class="cm">// Production — real Binance data (one line change)</span>
+<span class="kw">const</span> feed = <span class="kw">new</span> <span class="acc">MarketFeed</span>({
+  source: <span class="str">'binance'</span>,
+  type:   <span class="str">'crypto'</span>,
+  pairs:  [{ symbol: <span class="str">'BTC/USDT'</span> }]
+})
+
+feed.<span class="fn">on</span>(<span class="str">'tick'</span>,   (data) => { <span class="cm">/* your WebSocket */</span> })
+feed.<span class="fn">on</span>(<span class="str">'candle'</span>, (data) => { <span class="cm">/* OHLCV candle    */</span> })
+feed.<span class="fn">on</span>(<span class="str">'depth'</span>,  (data) => { <span class="cm">/* order book      */</span> })
 
 feed.<span class="fn">start</span>()</pre>
       </div>
@@ -985,7 +990,7 @@ feed.<span class="fn">start</span>()</pre>
       <div class="container">
         <div class="stats-grid">
           <div>
-            <div class="stat-value" id="stat-downloads">528+</div>
+            <div class="stat-value" id="stat-downloads">836+</div>
             <div class="stat-label">Monthly downloads</div>
           </div>
           <div>
@@ -1061,11 +1066,11 @@ feed.<span class="fn">start</span>()</pre>
             </p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🔷</div>
-            <h3>TypeScript Support</h3>
+            <div class="feature-icon">🔌</div>
+            <h3>Live Connectors</h3>
             <p>
-              Full .d.ts definitions included. All event payloads typed. All
-              config options typed. IDE autocomplete works out of the box.
+              Connect to real exchanges with one config change. Binance built-in
+              with no API key. Build custom connectors for any data source.
             </p>
           </div>
         </div>
@@ -1215,6 +1220,11 @@ feed.<span class="fn">start</span>()</pre>
           <span class="install-dollar">$</span>
           <span id="install-cmd">npm install trade-data-generator</span>
           <button class="copy-btn" id="copy-btn">copy</button>
+        </div>
+
+        <div style="display:flex;gap:0.75rem;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;">
+          <span style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.78rem;padding:0.35rem 0.85rem;background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.2);border-radius:100px;color:var(--accent);">simulation — fake data</span>
+          <span style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.78rem;padding:0.35rem 0.85rem;background:rgba(0,152,255,0.08);border:1px solid rgba(0,152,255,0.2);border-radius:100px;color:var(--accent2);">binance — real data</span>
         </div>
 
         <div class="install-links">
