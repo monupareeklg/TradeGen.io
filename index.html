@@ -917,7 +917,9 @@
         </div>
       </div>
 
-      <div class="hero-badge"><span>●</span> v3.0.0 — Simulation + Live Data</div>
+      <div class="hero-badge">
+        <span>●</span> v3.0.0 — Simulation + Live Data
+      </div>
 
       <h1>Realistic market data<br />for <em>trading UIs</em></h1>
 
@@ -990,7 +992,7 @@ feed.<span class="fn">start</span>()</pre>
       <div class="container">
         <div class="stats-grid">
           <div>
-            <div class="stat-value" id="stat-downloads">836+</div>
+            <div class="stat-value" id="stat-downloads">1.1k+</div>
             <div class="stat-label">Monthly downloads</div>
           </div>
           <div>
@@ -1222,9 +1224,45 @@ feed.<span class="fn">start</span>()</pre>
           <button class="copy-btn" id="copy-btn">copy</button>
         </div>
 
-        <div style="display:flex;gap:0.75rem;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;">
-          <span style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.78rem;padding:0.35rem 0.85rem;background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.2);border-radius:100px;color:var(--accent);">simulation — fake data</span>
-          <span style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.78rem;padding:0.35rem 0.85rem;background:rgba(0,152,255,0.08);border:1px solid rgba(0,152,255,0.2);border-radius:100px;color:var(--accent2);">binance — real data</span>
+        <div
+          style="
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+          "
+        >
+          <span
+            style="
+              display: inline-flex;
+              align-items: center;
+              gap: 0.4rem;
+              font-family: var(--mono);
+              font-size: 0.78rem;
+              padding: 0.35rem 0.85rem;
+              background: rgba(0, 212, 170, 0.08);
+              border: 1px solid rgba(0, 212, 170, 0.2);
+              border-radius: 100px;
+              color: var(--accent);
+            "
+            >simulation — fake data</span
+          >
+          <span
+            style="
+              display: inline-flex;
+              align-items: center;
+              gap: 0.4rem;
+              font-family: var(--mono);
+              font-size: 0.78rem;
+              padding: 0.35rem 0.85rem;
+              background: rgba(0, 152, 255, 0.08);
+              border: 1px solid rgba(0, 152, 255, 0.2);
+              border-radius: 100px;
+              color: var(--accent2);
+            "
+            >binance — real data</span
+          >
         </div>
 
         <div class="install-links">
@@ -1463,6 +1501,53 @@ feed.<span class="fn">start</span>()</pre>
               "@type": "Answer",
               "text": "Yes. trade-data-generator is completely free and open source under MIT license. No API keys, no rate limits, no subscriptions required."
             }
+          }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "trade-data-generator",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Node.js",
+        "description": "Generate realistic market data for trading UIs. Simulation for development. Real Binance data for production. Same API.",
+        "url": "https://tradesim.dev",
+        "downloadUrl": "https://www.npmjs.com/package/trade-data-generator",
+        "softwareVersion": "3.0.0",
+        "datePublished": "2026-05-08",
+        "dateModified": "2026-05-12",
+        "license": "https://opensource.org/licenses/MIT",
+        "author": {
+          "@type": "Person",
+          "name": "Love Pareek",
+          "url": "https://github.com/monupareeklg"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "keywords": "market data, trading, npm, nodejs, websocket, crypto, forex, equity, binance, simulation"
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://tradesim.dev"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Demo",
+            "item": "https://tradesim.dev/demo"
           }
         ]
       }
