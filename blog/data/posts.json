@@ -1,0 +1,10 @@
+[
+  {
+    "slug": "binance-websocket-nodejs",
+    "title": "How to connect to Binance WebSocket in Node.js",
+    "date": "2026-05-13",
+    "tags": ["nodejs", "binance", "websocket"],
+    "readTime": "8 min read",
+    "excerpt": "Step by step guide to connecting to Binance public WebSocket streams in Node.js — no API key needed."
+  }
+]

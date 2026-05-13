@@ -1,0 +1,225 @@
+{
+  "slug": "binance-websocket-nodejs",
+  "title": "How to connect to Binance WebSocket in Node.js",
+  "date": "2026-05-13",
+  "tags": ["nodejs", "binance", "websocket"],
+  "readTime": "8 min read",
+  "excerpt": "Step by step guide to connecting to Binance public WebSocket streams in Node.js — real-time price ticks, order book depth and candlestick data with no API key needed.",
+  "content": [
+    {
+      "type": "p",
+      "text": "Binance is the world's largest crypto exchange by volume. Their public WebSocket API gives you real-time market data — price ticks, order book depth, candlestick data — completely free, with no API key required. In this guide we'll connect to Binance WebSocket streams in Node.js from scratch."
+    },
+    {
+      "type": "h2",
+      "text": "What we're building"
+    },
+    {
+      "type": "p",
+      "text": "By the end of this guide you'll have a Node.js script that:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Connects to Binance WebSocket streams",
+        "Receives real-time BTC/USDT price ticks",
+        "Receives live order book depth (top 10 levels)",
+        "Receives 1 minute candlestick data",
+        "Auto-reconnects if connection drops"
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Prerequisites"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Node.js 18+ (native WebSocket support)",
+        "Basic knowledge of JavaScript and async/await",
+        "No Binance account needed — all data is public"
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "How Binance WebSocket works"
+    },
+    {
+      "type": "p",
+      "text": "Binance exposes a combined WebSocket endpoint that lets you subscribe to multiple streams in a single connection. The URL format is:"
+    },
+    {
+      "type": "code",
+      "lang": "bash",
+      "text": "wss://stream.binance.com:9443/stream?streams=stream1/stream2/stream3"
+    },
+    {
+      "type": "p",
+      "text": "Each stream follows a naming convention: <code>symbol@streamtype</code>. For example:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "<code>btcusdt@ticker</code> — 24hr price ticker",
+        "<code>btcusdt@depth10</code> — order book top 10 levels",
+        "<code>btcusdt@kline_1m</code> — 1 minute candlestick"
+      ]
+    },
+    {
+      "type": "callout",
+      "text": "Note: Binance symbols are lowercase and without the slash. <code>BTC/USDT</code> becomes <code>btcusdt</code>."
+    },
+    {
+      "type": "h2",
+      "text": "Step 1 — Setup"
+    },
+    {
+      "type": "p",
+      "text": "Create a new project and install the <code>ws</code> package for Node.js versions below 18, or use the native WebSocket API if you're on Node.js 18+."
+    },
+    {
+      "type": "code",
+      "lang": "bash",
+      "text": "mkdir binance-ws\ncd binance-ws\nnpm init -y\nnpm install ws"
+    },
+    {
+      "type": "h2",
+      "text": "Step 2 — Connect to Binance"
+    },
+    {
+      "type": "p",
+      "text": "Create <code>index.js</code> and open a WebSocket connection to Binance:"
+    },
+    {
+      "type": "code",
+      "lang": "javascript",
+      "text": "const WebSocket = require('ws')\n\nconst SYMBOL   = 'btcusdt'\nconst STREAMS  = [\n  `${SYMBOL}@ticker`,     // price tick\n  `${SYMBOL}@depth10`,    // order book\n  `${SYMBOL}@kline_1m`,   // 1m candle\n].join('/')\n\nconst WS_URL = `wss://stream.binance.com:9443/stream?streams=${STREAMS}`\n\nconst ws = new WebSocket(WS_URL)\n\nws.on('open', () => {\n  console.log('Connected to Binance')\n})\n\nws.on('message', (raw) => {\n  const msg = JSON.parse(raw)\n  handleMessage(msg.stream, msg.data)\n})\n\nws.on('error', (err) => {\n  console.error('WebSocket error:', err.message)\n})\n\nws.on('close', () => {\n  console.log('Disconnected')\n})\n\nfunction handleMessage(stream, data) {\n  if (stream.endsWith('@ticker')) {\n    console.log(`Price: $${data.c}  Change: ${data.P}%`)\n  }\n}\n"
+    },
+    {
+      "type": "p",
+      "text": "Run it:"
+    },
+    {
+      "type": "code",
+      "lang": "bash",
+      "text": "node index.js"
+    },
+    {
+      "type": "p",
+      "text": "You should immediately see real BTC/USDT prices updating every second."
+    },
+    {
+      "type": "h2",
+      "text": "Step 3 — Handle all stream types"
+    },
+    {
+      "type": "p",
+      "text": "Let's expand the <code>handleMessage</code> function to process all three streams:"
+    },
+    {
+      "type": "code",
+      "lang": "javascript",
+      "text": "function handleMessage(stream, data) {\n\n  // ── 24hr ticker ──────────────────────── //\n  if (stream.endsWith('@ticker')) {\n    const tick = {\n      symbol:    'BTC/USDT',\n      price:     parseFloat(data.c),\n      change:    parseFloat(data.p),\n      changePct: parseFloat(data.P),\n      high24h:   parseFloat(data.h),\n      low24h:    parseFloat(data.l),\n      volume:    parseFloat(data.v),\n      bid:       parseFloat(data.b),\n      ask:       parseFloat(data.a),\n    }\n    console.log(`[TICK] $${tick.price}  ${tick.changePct > 0 ? '+' : ''}${tick.changePct}%`)\n    return\n  }\n\n  // ── Order book ────────────────────────── //\n  if (stream.includes('@depth')) {\n    const bestBid = parseFloat(data.bids[0][0])\n    const bestAsk = parseFloat(data.asks[0][0])\n    const spread  = (bestAsk - bestBid).toFixed(2)\n    console.log(`[BOOK] Bid: $${bestBid}  Ask: $${bestAsk}  Spread: $${spread}`)\n    return\n  }\n\n  // ── Candlestick ───────────────────────── //\n  if (stream.includes('@kline_')) {\n    const k = data.k\n    console.log(\n      `[CANDLE] O:${k.o} H:${k.h} L:${k.l} C:${k.c}` +\n      (k.x ? ' [CLOSED]' : ' [OPEN]')\n    )\n    return\n  }\n}\n"
+    },
+    {
+      "type": "h2",
+      "text": "Step 4 — Add auto-reconnect"
+    },
+    {
+      "type": "p",
+      "text": "WebSocket connections can drop unexpectedly. Add auto-reconnect with exponential backoff so your app stays connected:"
+    },
+    {
+      "type": "code",
+      "lang": "javascript",
+      "text": "const WebSocket = require('ws')\n\nconst SYMBOL  = 'btcusdt'\nconst STREAMS = [\n  `${SYMBOL}@ticker`,\n  `${SYMBOL}@depth10`,\n  `${SYMBOL}@kline_1m`,\n].join('/')\n\nconst WS_URL       = `wss://stream.binance.com:9443/stream?streams=${STREAMS}`\nconst MAX_RETRIES  = 5\nlet   retryCount   = 0\nlet   ws           = null\n\nfunction connect() {\n  ws = new WebSocket(WS_URL)\n\n  ws.on('open', () => {\n    console.log('Connected to Binance')\n    retryCount = 0   // reset on successful connect\n  })\n\n  ws.on('message', (raw) => {\n    const msg = JSON.parse(raw)\n    handleMessage(msg.stream, msg.data)\n  })\n\n  ws.on('error', (err) => {\n    console.error('WebSocket error:', err.message)\n  })\n\n  ws.on('close', () => {\n    if (retryCount >= MAX_RETRIES) {\n      console.error('Max reconnect attempts reached')\n      return\n    }\n    retryCount++\n    const delay = 3000 * retryCount\n    console.log(`Reconnecting in ${delay}ms... (attempt ${retryCount})`)\n    setTimeout(connect, delay)\n  })\n}\n\nconnect()\n"
+    },
+    {
+      "type": "h2",
+      "text": "Step 5 — Subscribe to multiple symbols"
+    },
+    {
+      "type": "p",
+      "text": "Binance combined streams support multiple symbols in one connection. Just add more streams to the URL:"
+    },
+    {
+      "type": "code",
+      "lang": "javascript",
+      "text": "const SYMBOLS = ['btcusdt', 'ethusdt', 'solusdt']\n\nconst STREAMS = SYMBOLS.flatMap(symbol => [\n  `${symbol}@ticker`,\n  `${symbol}@depth10`,\n  `${symbol}@kline_1m`,\n]).join('/')\n\nconst WS_URL = `wss://stream.binance.com:9443/stream?streams=${STREAMS}`\n// Now receiving data for 3 symbols via one connection\n"
+    },
+    {
+      "type": "callout",
+      "text": "Binance limits each connection to 1024 streams. For most use cases with a handful of symbols and 3 streams each, you'll never hit this limit."
+    },
+    {
+      "type": "h2",
+      "text": "The easier way — use trade-data-generator"
+    },
+    {
+      "type": "p",
+      "text": "If you're building a trading UI, connecting to Binance WebSocket manually means writing all the normalization, reconnection, and candle management logic yourself. <code>trade-data-generator</code> handles all of that for you — and lets you switch between real Binance data and simulation with one line."
+    },
+    {
+      "type": "code",
+      "lang": "bash",
+      "text": "npm install trade-data-generator"
+    },
+    {
+      "type": "code",
+      "lang": "javascript",
+      "text": "const { MarketFeed } = require('trade-data-generator')\n\n// Real Binance data — no API key needed\nconst feed = new MarketFeed({\n  source: 'binance',\n  type:   'crypto',\n  pairs:  [\n    { symbol: 'BTC/USDT' },\n    { symbol: 'ETH/USDT' },\n    { symbol: 'SOL/USDT' },\n  ]\n})\n\n// Clean normalized events — same format always\nfeed.on('tick', (data) => {\n  console.log(data.symbol, data.price, data.changePct)\n  // { symbol: 'BTC/USDT', price: 80920, changePct: 0.11, ... }\n})\n\nfeed.on('candle', (data) => {\n  console.log(data.interval, data.open, data.close, data.closed)\n})\n\nfeed.on('depth', (data) => {\n  console.log(data.bids[0], data.asks[0])\n})\n\nfeed.start()\n"
+    },
+    {
+      "type": "p",
+      "text": "The real advantage: when you're developing locally you can switch to simulation mode with no network calls, then switch back to Binance for production — zero code changes."
+    },
+    {
+      "type": "code",
+      "lang": "javascript",
+      "text": "// Development — fake data, works offline\nconst feed = new MarketFeed({\n  source: 'simulation',\n  type:   'crypto',\n  pairs:  [{ symbol: 'BTC/USDT', startPrice: 45000 }]\n})\n\n// Production — real Binance data\nconst feed = new MarketFeed({\n  source: 'binance',\n  type:   'crypto',\n  pairs:  [{ symbol: 'BTC/USDT' }]\n})\n\n// Identical events either way\nfeed.on('tick', (data) => {})\nfeed.start()\n"
+    },
+    {
+      "type": "h2",
+      "text": "Binance ticker fields reference"
+    },
+    {
+      "type": "p",
+      "text": "The raw Binance <code>@ticker</code> stream sends these fields — the naming is not obvious:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "<code>c</code> — current price (last trade price)",
+        "<code>b</code> — best bid price",
+        "<code>a</code> — best ask price",
+        "<code>p</code> — price change (24h)",
+        "<code>P</code> — price change percent (24h)",
+        "<code>h</code> — high price (24h)",
+        "<code>l</code> — low price (24h)",
+        "<code>v</code> — total traded volume (24h)",
+        "<code>o</code> — open price (24h)",
+        "<code>E</code> — event time (timestamp ms)"
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Summary"
+    },
+    {
+      "type": "p",
+      "text": "Connecting to Binance WebSocket in Node.js is straightforward — open a connection to the combined stream URL, parse incoming messages, and handle each stream type separately. Add auto-reconnect with exponential backoff for production reliability."
+    },
+    {
+      "type": "p",
+      "text": "If you're building a trading UI and don't want to manage the WebSocket connection yourself, <code>trade-data-generator</code> wraps all of this into a clean EventEmitter API that works identically whether you're using real Binance data or local simulation."
+    },
+    {
+      "type": "ul",
+      "items": [
+        "<a href='https://www.npmjs.com/package/trade-data-generator'>trade-data-generator on npm</a>",
+        "<a href='https://github.com/monupareeklg/trade-data-generator'>GitHub repository</a>",
+        "<a href='https://tradesim.dev/demo'>Live demo</a>"
+      ]
+    }
+  ]
+}
