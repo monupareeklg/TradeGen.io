@@ -1,0 +1,217 @@
+# trade-data-generator
+
+> The universal market data layer for trading UIs.
+> Simulation for development. Real exchange data for production.
+> Same API. Same format. One library.
+
+## What it is
+
+trade-data-generator is a Node.js npm library that generates realistic market data for trading UIs. It supports price ticks, order book depth and OHLCV candlestick data for equity, forex and crypto markets.
+
+The library works in two modes:
+- Simulation mode — generates realistic fake data locally, no API keys, no network calls, works offline
+- Live mode — connects to real exchange WebSocket streams (Binance built-in), no API key required for public data
+
+Developers switch between modes with one config change. The events, data format and API are identical regardless of source.
+
+## Why it exists
+
+Building a trading UI requires live market data at every stage. Real data feeds cost money. Free APIs have rate limits. Hardcoded data looks broken on charts. trade-data-generator solves the development and production problem in one library.
+
+## Key features
+
+- Zero dependencies — nothing extra installs
+- EventEmitter API — wire into any WebSocket server (Socket.io, ws, Pusher)
+- Realistic price simulation — mean reversion, volatility, trend bias, Box-Muller distribution
+- Accurate order book — bid always below ask, volume tapers with depth
+- OHLCV candles — multiple intervals simultaneously (1s, 1m, 5m, 15m, 1h, 4h, 1d)
+- Market hours — equity and forex respect open/close times via IANA timezones
+- Binance connector — real-time data from Binance public WebSocket, no API key
+- Pluggable connectors — build your own connector for any exchange
+- TypeScript support — full .d.ts definitions included
+- 167 tests — 91.9% coverage
+- MIT license — free forever
+
+## Supported market types
+
+- crypto — always open, no market hours needed
+- equity — respects market hours (e.g. NYSE 09:30-16:00 America/New_York)
+- forex — respects market hours (e.g. UTC 00:00-23:59 weekdays)
+
+## Available sources
+
+- simulation (default) — fake realistic data, zero API keys, works offline
+- binance — real Binance WebSocket data, no API key needed
+- custom — extend BaseConnector to add any exchange
+
+## Install
+
+```bash
+npm install trade-data-generator
+```
+
+## Quick start — simulation
+
+```javascript
+const { MarketFeed } = require('trade-data-generator')
+
+const feed = new MarketFeed({
+  source: 'simulation',
+  type:   'crypto',
+  pairs:  [
+    { symbol: 'BTC/USDT', startPrice: 45000, volatility: 0.004 },
+    { symbol: 'ETH/USDT', startPrice: 2800,  volatility: 0.005 },
+  ]
+})
+
+feed.on('tick',   (data) => console.log(data.symbol, data.price))
+feed.on('candle', (data) => console.log(data.interval, data.close))
+feed.on('depth',  (data) => console.log(data.bids[0], data.asks[0]))
+
+feed.start()
+```
+
+## Quick start — real Binance data
+
+```javascript
+const { MarketFeed } = require('trade-data-generator')
+
+const feed = new MarketFeed({
+  source: 'binance',   // one line change from simulation
+  type:   'crypto',
+  pairs:  [
+    { symbol: 'BTC/USDT' },
+    { symbol: 'ETH/USDT' },
+  ]
+})
+
+feed.on('tick',   (data) => console.log(data.symbol, data.price, data.source))
+feed.on('candle', (data) => console.log(data.interval, data.close))
+feed.on('depth',  (data) => console.log(data.bids[0], data.asks[0]))
+
+feed.start()
+```
+
+## Tick event data shape
+
+```javascript
+{
+  symbol:    'BTC/USDT',
+  type:      'crypto',
+  source:    'binance',       // or 'simulation'
+  timestamp:  1714900000000,
+  price:      80920.00,
+  bid:        80920.00,
+  ask:        80920.01,
+  spread:     0.01,
+  volume:     14376.18,
+  change:     +88.68,
+  changePct:  +0.11,
+  high24h:    82479.32,
+  low24h:     80279.77,
+  open24h:    80831.32,
+  previous:   80919.99,
+}
+```
+
+## Candle event data shape
+
+```javascript
+{
+  symbol:    'BTC/USDT',
+  interval:  '1m',
+  openTime:  1714900000000,
+  closeTime: 1714900060000,
+  open:      80900.00,
+  high:      80950.00,
+  low:       80880.00,
+  close:     80920.00,
+  volume:    42.18,
+  closed:    true,
+  source:    'binance',
+}
+```
+
+## WebSocket integration example
+
+```javascript
+const { MarketFeed } = require('trade-data-generator')
+const { Server }     = require('socket.io')
+const http           = require('http')
+
+const server = http.createServer()
+const io     = new Server(server)
+
+const feed = new MarketFeed({
+  source: 'binance',
+  type:   'crypto',
+  pairs:  [{ symbol: 'BTC/USDT' }]
+})
+
+feed.on('tick',   (data) => io.to(data.symbol).emit('ticker', data))
+feed.on('candle', (data) => io.to(data.symbol).emit('candle', data))
+feed.on('depth',  (data) => io.to(data.symbol).emit('book',   data))
+
+io.on('connection', (socket) => {
+  socket.on('subscribe', ({ symbol }) => {
+    socket.join(symbol)
+  })
+})
+
+feed.start()
+server.listen(3001)
+```
+
+## Custom connector
+
+```javascript
+const { MarketFeed, BaseConnector, registerConnector } = require('trade-data-generator')
+
+class MyExchangeConnector extends BaseConnector {
+  async connect()            { /* open WebSocket */ }
+  async disconnect()         { /* close WebSocket */ }
+  async subscribe(symbols)   { /* subscribe to pairs */ }
+  async unsubscribe(symbols) { /* unsubscribe */ }
+  normalizeTick(raw)         { return { ...raw, source: 'myexchange' } }
+  normalizeCandle(raw)       { return { ...raw, source: 'myexchange' } }
+  normalizeDepth(raw)        { return { ...raw, source: 'myexchange' } }
+}
+
+registerConnector('myexchange', MyExchangeConnector)
+
+const feed = new MarketFeed({
+  source: 'myexchange',
+  type:   'crypto',
+  pairs:  [{ symbol: 'BTC/USDT' }]
+})
+```
+
+## API methods
+
+- feed.start() — start the feed
+- feed.stop() — stop completely
+- feed.pause() — pause ticks (simulation only)
+- feed.resume() — resume after pause
+- feed.getState(symbol) — current state for a symbol
+- feed.getCandles(symbol, interval, limit) — candle history
+- feed.getSymbols() — all symbol names
+- feed.getSource() — active source name
+- feed.getMarketStatus() — market open/close status
+- feed.reset(symbol) — reset symbol to start price (simulation)
+- feed.resetAll() — reset all symbols (simulation)
+- feed.isRunning() — boolean
+
+## Links
+
+- npm: https://www.npmjs.com/package/trade-data-generator
+- GitHub: https://github.com/monupareeklg/trade-data-generator
+- Demo: https://tradesim.dev/demo
+- Website: https://tradesim.dev
+- Blog: https://tradesim.dev/blog/
+- Issues: https://github.com/monupareeklg/trade-data-generator/issues
+
+## Version
+
+Current version: 3.0.1
+License: MIT
+Author: Love Pareek (monupareeklg@gmail.com)
